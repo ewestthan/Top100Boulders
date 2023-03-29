@@ -9,6 +9,10 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import {db} from "../firebase/initFirebase";
+import { uid } from 'uid';
+import { set, ref, onValue } from 'firebase/database';
+
 
 const Row = ({ children, ...props }) => {
   const {
@@ -98,64 +102,83 @@ const EditableCell = ({
 };
 
 const MainTable = () => {
+  
+  useEffect(() => {
+        
+    onValue(ref(db, 'b264b344b6e/dataSource'), snapshot => {
+    const data = snapshot.val()
+    if(data !== null){
+      setDataSource(data)
+    }
+    
+    })
+}, [])
+
+  const writeToDatabase = () => {
+    const uuid = uid();
+    set(ref(db, `/${uuid}`),{
+      dataSource,
+      uuid,
+    });
+  }
 
   const [dataSource, setDataSource] = useState([
-    {
-      key: '1',
-      rank: '1',
-      grade: 'V13',
-      name: 'Kintsugi',
-      location: "Red Rocks",
-      uncontrived: true,
-      obviousStart: true,
-      greatRock: true,
-      flatLanding: true,
-      tall: true,
-      beautifulSetting: true,
-      sent: true,
-    },
-    {
-      key: '2',
-      rank: '2',
-      grade: 'V11',
-      name: 'Western Gold',
-      location: "Southeast",
-      uncontrived: false,
-      obviousStart: false,
-      greatRock: false,
-      flatLanding: false,
-      tall: false,
-      beautifulSetting: false,
-      sent: false,
-    },
-    {
-      key: '3',
-      rank: '3',
-      grade: 'V10',
-      name: 'King Air',
-      location: "Yosemite",
-      uncontrived: true,
-      obviousStart: true,
-      greatRock: true,
-      flatLanding: true,
-      tall: true,
-      beautifulSetting: true,
-      sent: true,
-    },
-    {
-      key: '4',
-      rank: '4',
-      grade: 'V13',
-      name: 'Spectre',
-      location: "Bishop",
-      uncontrived: false,
-      obviousStart: false,
-      greatRock: false,
-      flatLanding: false,
-      tall: false,
-      beautifulSetting: false,
-      sent: false,
-    }
+    // {
+    //   key: '1',
+    //   rank: '1',
+    //   grade: 'V13',
+    //   name: 'Kintsugi',
+    //   location: "Red Rocks",
+    //   uncontrived: true,
+    //   obviousStart: true,
+    //   greatRock: true,
+    //   flatLanding: true,
+    //   tall: true,
+    //   beautifulSetting: true,
+    //   sent: true,
+    // },
+    // {
+    //   key: '2',
+    //   rank: '2',
+    //   grade: 'V11',
+    //   name: 'Western Gold',
+    //   location: "Southeast",
+    //   uncontrived: false,
+    //   obviousStart: false,
+    //   greatRock: false,
+    //   flatLanding: false,
+    //   tall: false,
+    //   beautifulSetting: false,
+    //   sent: false,
+    // },
+    // {
+    //   key: '3',
+    //   rank: '3',
+    //   grade: 'V10',
+    //   name: 'King Air',
+    //   location: "Yosemite",
+    //   uncontrived: true,
+    //   obviousStart: true,
+    //   greatRock: true,
+    //   flatLanding: true,
+    //   tall: true,
+    //   beautifulSetting: true,
+    //   sent: true,
+    // },
+    // {
+    //   key: '4',
+    //   rank: '4',
+    //   grade: 'V13',
+    //   name: 'Spectre',
+    //   location: "Bishop",
+    //   uncontrived: false,
+    //   obviousStart: false,
+    //   greatRock: false,
+    //   flatLanding: false,
+    //   tall: false,
+    //   beautifulSetting: false,
+    //   sent: false,
+    // }
   ]);
 
   
@@ -280,8 +303,6 @@ const MainTable = () => {
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState('');
   const isEditing = (record) => record.key === editingKey;
-  const [count, setCount] = useState(2);
-
 
   const handleEdit = (record) => {
     form.setFieldsValue({
@@ -337,19 +358,15 @@ const MainTable = () => {
   };
 
   const handleDelete = (key) => {
-
     var itemToDelete = dataSource.find(obj => {
       return obj.key === key
     })
-    console.log(itemToDelete)
-
     const newData = dataSource.filter((item) => item.key !== key);
     for(var i = 0; i < newData.length; i++){
       if(itemToDelete.rank < newData[i].rank){
         newData[i].rank = String(parseInt(newData[i].rank) - 1)
       }
     }
-    
     setDataSource(newData);
   };
 
@@ -423,15 +440,15 @@ const MainTable = () => {
 
   return (
     <div>
-      {/* <Button
-        onClick={handleSaveTable}
+      <Button
+        onClick={writeToDatabase}
         type="primary"
         style={{
           marginBottom: 16,
         }}
       >
         Save Table
-      </Button> */}
+      </Button>
       <Button
         onClick={handleAdd}
         type="primary"

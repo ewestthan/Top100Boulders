@@ -1,5 +1,6 @@
 import MainTable from './components/MainTable.jsx';
 import React from 'react';
+import Testing from './components/test.jsx';
 
 function App() {
   return (
@@ -7,7 +8,7 @@ function App() {
       <header className="App-header">        
       </header>
       <MainTable/>
-
+      <Testing/>
     </div>
   );
 }

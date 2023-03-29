@@ -99,39 +99,52 @@ const EditableCell = ({
 
 const MainTable = () => {
 
-  const isTrue = (text) => text;
-
   const [dataSource, setDataSource] = useState([
     {
       key: '1',
       rank: '1',
-      grade: 'V11',
-      name: 'Western Gold',
-      location: "Southeast",
+      grade: 'V13',
+      name: 'Kintsugi',
+      location: "Red Rocks",
       uncontrived: true,
-      obviousStart: false,
+      obviousStart: true,
       greatRock: true,
-      flatLanding: false,
+      flatLanding: true,
       tall: true,
       beautifulSetting: true,
-      sent: false,
+      sent: true,
     },
     {
       key: '2',
       rank: '2',
-      grade: 'V13',
-      name: 'Kintsugi',
-      location: "Red Rocks",
+      grade: 'V11',
+      name: 'Western Gold',
+      location: "Southeast",
       uncontrived: false,
       obviousStart: false,
+      greatRock: false,
+      flatLanding: false,
+      tall: false,
+      beautifulSetting: false,
+      sent: false,
+    },
+    {
+      key: '3',
+      rank: '3',
+      grade: 'V10',
+      name: 'King Air',
+      location: "Yosemite",
+      uncontrived: true,
+      obviousStart: true,
       greatRock: true,
       flatLanding: true,
-      tall: false,
+      tall: true,
       beautifulSetting: true,
-      sent: false,
+      sent: true,
     }
   ]);
 
+  
   const defaultColumns = [
     {
       key: 'sort'
@@ -146,7 +159,6 @@ const MainTable = () => {
       dataIndex: 'grade',
       key: 'grade',
       editable: true,
-      inputType: "number"
     },
     {
       title: 'Name',
@@ -216,7 +228,6 @@ const MainTable = () => {
       editable: true,
       inputType: 'boolean',
       render : (_, text) => {
-        console.log(text.sent)
         return text.sent ? (<CheckCircleFilled />) : (<CloseCircleOutlined />)
       },
     },
@@ -256,7 +267,6 @@ const MainTable = () => {
   const [form] = Form.useForm();
   const [editingKey, setEditingKey] = useState('');
   const isEditing = (record) => record.key === editingKey;
-  
   const [count, setCount] = useState(2);
 
 
@@ -305,15 +315,27 @@ const MainTable = () => {
     }
   };
 
+  const handleSaveTable = async (key) => {
+    try {
+  
+    } catch (errInfo) {
+      console.log('Validate Failed:', errInfo);
+    }
+  };
+
   const handleDelete = (key) => {
     const newData = dataSource.filter((item) => item.key !== key);
+    console.log("key", key)
+    for(var i = key; i < dataSource.length; i++){
+      dataSource[i].rank = String(parseInt(dataSource[i].rank) - 1)
+    }
     setDataSource(newData);
   };
 
   const handleAdd = () => {
     const newData = {
-      key: count,
-      rank: 'X',
+      key: dataSource.length + 1,
+      rank: String(dataSource.length + 1),
       grade: 'X',
       name: 'X',
       location: "X",
@@ -326,7 +348,6 @@ const MainTable = () => {
       sent: false,
     };
     setDataSource([...dataSource, newData]);
-    setCount(count + 1);
   };
 
   const onDragEnd = ({ active, over }) => {
@@ -334,6 +355,23 @@ const MainTable = () => {
       setDataSource((previous) => {
         const activeIndex = previous.findIndex((i) => i.key === active.id);
         const overIndex = previous.findIndex((i) => i.key === over?.id);
+        try{
+          if(dataSource[activeIndex].rank > dataSource[overIndex].rank){
+              for(var i = overIndex; i < activeIndex; i++){
+                dataSource[i].rank = String(parseInt(dataSource[i].rank) + 1);
+                dataSource[activeIndex].rank = String(parseInt(dataSource[overIndex].rank) - 1)
+              }
+          }
+          if(dataSource[activeIndex].rank < dataSource[overIndex].rank){
+            for(i = overIndex; i > activeIndex; i--){
+              dataSource[i].rank = String(parseInt(dataSource[i].rank) - 1);
+              dataSource[activeIndex].rank = String(parseInt(dataSource[overIndex].rank) + 1)
+            }
+        }
+      } catch (e){
+        console.log("failed: ", e)
+      }
+
         return arrayMove(previous, activeIndex, overIndex);
       });
     }
@@ -358,6 +396,15 @@ const MainTable = () => {
 
   return (
     <div>
+      {/* <Button
+        onClick={handleSaveTable}
+        type="primary"
+        style={{
+          marginBottom: 16,
+        }}
+      >
+        Save Table
+      </Button> */}
       <Button
         onClick={handleAdd}
         type="primary"

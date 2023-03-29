@@ -141,6 +141,20 @@ const MainTable = () => {
       tall: true,
       beautifulSetting: true,
       sent: true,
+    },
+    {
+      key: '4',
+      rank: '4',
+      grade: 'V13',
+      name: 'Spectre',
+      location: "Bishop",
+      uncontrived: false,
+      obviousStart: false,
+      greatRock: false,
+      flatLanding: false,
+      tall: false,
+      beautifulSetting: false,
+      sent: false,
     }
   ]);
 
@@ -232,7 +246,6 @@ const MainTable = () => {
       },
     },
     {
-      title: 'operation',
       dataIndex: 'operation',
       render: (_, record) => {
         const editable = isEditing(record);
@@ -324,11 +337,19 @@ const MainTable = () => {
   };
 
   const handleDelete = (key) => {
+
+    var itemToDelete = dataSource.find(obj => {
+      return obj.key === key
+    })
+    console.log(itemToDelete)
+
     const newData = dataSource.filter((item) => item.key !== key);
-    console.log("key", key)
-    for(var i = key; i < dataSource.length; i++){
-      dataSource[i].rank = String(parseInt(dataSource[i].rank) - 1)
+    for(var i = 0; i < newData.length; i++){
+      if(itemToDelete.rank < newData[i].rank){
+        newData[i].rank = String(parseInt(newData[i].rank) - 1)
+      }
     }
+    
     setDataSource(newData);
   };
 
@@ -360,20 +381,26 @@ const MainTable = () => {
               for(var i = overIndex; i < activeIndex; i++){
                 dataSource[i].rank = String(parseInt(dataSource[i].rank) + 1);
                 dataSource[activeIndex].rank = String(parseInt(dataSource[overIndex].rank) - 1)
+                // dataSource[i].key = String(parseInt(dataSource[i].key) + 1);
+                // dataSource[activeIndex].key = String(parseInt(dataSource[overIndex].key) - 1)
               }
           }
           if(dataSource[activeIndex].rank < dataSource[overIndex].rank){
-            for(i = overIndex; i > activeIndex; i--){
+            for(var i = activeIndex + 1; i <= overIndex; i++){
               dataSource[i].rank = String(parseInt(dataSource[i].rank) - 1);
               dataSource[activeIndex].rank = String(parseInt(dataSource[overIndex].rank) + 1)
+              // dataSource[i].key = String(parseInt(dataSource[i].key) - 1);
+              // dataSource[activeIndex].key = String(parseInt(dataSource[overIndex].key) + 1)
             }
         }
+        
       } catch (e){
         console.log("failed: ", e)
       }
 
         return arrayMove(previous, activeIndex, overIndex);
       });
+      console.log("moved", dataSource)
     }
   };
 

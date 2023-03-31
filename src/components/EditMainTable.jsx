@@ -76,11 +76,20 @@ const EditableCell = ({
   children,
   ...restProps
 }) => {
-  const inputNode = inputType === 'boolean' ? <Checkbox defaultChecked={record[dataIndex]}/> : <Input />;
+  const inputNode = inputType === 'boolean' ? <Checkbox value={record[dataIndex]}/> : <Input />;
   return (
     <td {...restProps}>
       {editing ? (
-
+          inputType === 'boolean' ?
+          <Form.Item
+          name={dataIndex}
+          valuePropName={dataIndex ? "checked" : ""}
+          style={{
+            margin: 0,
+          }}
+        >
+          {inputNode}
+        </Form.Item> :
         <Form.Item
           name={dataIndex}
           style={{
@@ -284,6 +293,7 @@ const MainTable = () => {
       const row = await form.validateFields();
       const newData = [...dataSource];
       const index = newData.findIndex((item) => key === item.key);
+      console.log(row)
       if (index > -1) {
         const item = newData[index];
         newData.splice(index, 1, {
@@ -297,14 +307,6 @@ const MainTable = () => {
         setDataSource(newData);
         setEditingKey('');
       }
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
-    }
-  };
-
-  const handleSaveTable = async (key) => {
-    try {
-  
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
     }

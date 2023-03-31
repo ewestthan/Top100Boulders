@@ -13,14 +13,14 @@ const MainTable = () => {
   
   useEffect(() => {
         
-    onValue(ref(db, 'b264b344b6e/dataSource'), snapshot => {
+    onValue(ref(db, 'dataSource'), snapshot => {
     const data = snapshot.val()
     if(data !== null){
       setDataSource(data)
     }
     
     })
-}, [])
+    }, [])
 
   const [dataSource, setDataSource] = useState([]);
 

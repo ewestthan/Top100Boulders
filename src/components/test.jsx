@@ -1,20 +1,24 @@
 import {db} from "../firebase/initFirebase";
 import { uid } from 'uid';
-import { set, ref, onValue } from 'firebase/database';
+// import { set, ref, onValue } from 'firebase/database';
+import {collection, doc, getDoc, setDoc} from 'firebase/firestore'
+
 import React, { useContext, useEffect, useRef, useState } from 'react';
 
 const Testing = () => {
     const [dataSource, setDataSource] = useState([])
-
+    const mainTableRef = collection(db, 'MainTable')
+    const docSnap =  getDoc(mainTableRef)
     useEffect(() => {
         
-        onValue(ref(db, 'b264b344b6e/dataSource'), snapshot => {
-        const data = snapshot.val()
-        if(data !== null){
-          setDataSource(data)
+
+        if (docSnap.exists()) {
+        console.log("Document data:", docSnap.data());
+        } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
         }
         
-        })
     }, [])
 
 //   const writeToDatabase = () => {

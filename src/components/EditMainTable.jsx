@@ -318,7 +318,9 @@ const MainTable = () => {
     })
     const newData = dataSource.filter((item) => item.key !== key);
     for(var i = 0; i < newData.length; i++){
-      if(itemToDelete.rank < newData[i].rank){
+        console.log("in loop")
+      if(parseInt(itemToDelete.rank) <= parseInt(newData[i].rank)){
+        console.log("in if")
         newData[i].rank = String(parseInt(newData[i].rank) - 1)
       }
     }

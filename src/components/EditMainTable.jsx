@@ -114,7 +114,8 @@ const EditableCell = ({
 const MainTable = () => {
     const [user, loading, error] = useAuthState(auth);
     const navigate = useNavigate();
-    
+    const [deleted, setDeleted] = useState(0);
+
     useEffect(() => {
         if (loading) return;
         if (!user) return navigate("/");
@@ -317,19 +318,20 @@ const MainTable = () => {
       return obj.key === key
     })
     const newData = dataSource.filter((item) => item.key !== key);
+    
     for(var i = 0; i < newData.length; i++){
-        console.log("in loop")
-      if(parseInt(itemToDelete.rank) <= parseInt(newData[i].rank)){
-        console.log("in if")
-        newData[i].rank = String(parseInt(newData[i].rank) - 1)
+      if(parseInt(itemToDelete.rank) < parseInt(newData[i].rank)){
+        newData[i].rank = String(parseInt(newData[i].rank) - 1);
+        // newData[i].key = newData[i].rank;
       }
     }
+    setDeleted(deleted - 1);
     setDataSource(newData);
   };
 
   const handleAdd = () => {
     const newData = {
-      key: dataSource.length + 1,
+      key: dataSource.length + 1 - deleted,
       rank: String(dataSource.length + 1),
       grade: 'X',
       name: 'X',
@@ -351,20 +353,16 @@ const MainTable = () => {
         const activeIndex = previous.findIndex((i) => i.key === active.id);
         const overIndex = previous.findIndex((i) => i.key === over?.id);
         try{
-          if(dataSource[activeIndex].rank > dataSource[overIndex].rank){
+          if(parseInt(dataSource[activeIndex].rank) > parseInt(dataSource[overIndex].rank)){
               for(var i = overIndex; i < activeIndex; i++){
                 dataSource[i].rank = String(parseInt(dataSource[i].rank) + 1);
                 dataSource[activeIndex].rank = String(parseInt(dataSource[overIndex].rank) - 1)
-                // dataSource[i].key = String(parseInt(dataSource[i].key) + 1);
-                // dataSource[activeIndex].key = String(parseInt(dataSource[overIndex].key) - 1)
               }
           }
-          if(dataSource[activeIndex].rank < dataSource[overIndex].rank){
+          if(parseInt(dataSource[activeIndex].rank) < parseInt(dataSource[overIndex].rank)){
             for(var i = activeIndex + 1; i <= overIndex; i++){
               dataSource[i].rank = String(parseInt(dataSource[i].rank) - 1);
               dataSource[activeIndex].rank = String(parseInt(dataSource[overIndex].rank) + 1)
-              // dataSource[i].key = String(parseInt(dataSource[i].key) - 1);
-              // dataSource[activeIndex].key = String(parseInt(dataSource[overIndex].key) + 1)
             }
         }
         

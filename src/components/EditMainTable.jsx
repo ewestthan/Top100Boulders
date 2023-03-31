@@ -9,10 +9,9 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import {fdb, logout, db, auth} from "../firebase/initFirebase";
+import {logout, db, auth} from "../firebase/initFirebase";
 import { uid } from 'uid';
-import { set, ref, onValue } from 'firebase/database';
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { set, ref, onValue, update } from 'firebase/database';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -105,106 +104,35 @@ const EditableCell = ({
 
 const MainTable = () => {
     const [user, loading, error] = useAuthState(auth);
-    const [name, setName] = useState("");
     const navigate = useNavigate();
-
-    const fetchUserName = async () => {
-        try {
-          const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-          const doc = await getDocs(q);
-          const data = doc.docs[0].data();
     
-          setName(data.name);
-        } catch (err) {
-          console.error(err);
-          alert("An error occured while fetching user data");
-        }
-      };
-    
-      useEffect(() => {
+    useEffect(() => {
         if (loading) return;
         if (!user) return navigate("/");
-    
-        fetchUserName();
-      }, [user, loading]);
+    }, [user, loading]);
 
-  useEffect(() => {
+    useEffect(() => {
         
-    onValue(ref(fdb, 'b264b344b6e/dataSource'), snapshot => {
+    onValue(ref(db, 'dataSource'), snapshot => {
     const data = snapshot.val()
     if(data !== null){
       setDataSource(data)
     }
     
     })
-}, [])
+    }, [])
 
-  const writeToDatabase = () => {
-    const uuid = uid();
-    set(ref(fdb, `/${uuid}`),{
-      dataSource,
-      uuid,
-    });
-  }
+    const writeToDatabase = async (e) => {
+    try{
+        update(ref(db), {"dataSource": dataSource})
+        
+        // ref(db, 'b264b344b6e').update({'dataSource': dataSource})
+    } catch (e){
+        console.log(e)
+    }
+    }
 
-  const [dataSource, setDataSource] = useState([
-    // {
-    //   key: '1',
-    //   rank: '1',
-    //   grade: 'V13',
-    //   name: 'Kintsugi',
-    //   location: "Red Rocks",
-    //   uncontrived: true,
-    //   obviousStart: true,
-    //   greatRock: true,
-    //   flatLanding: true,
-    //   tall: true,
-    //   beautifulSetting: true,
-    //   sent: true,
-    // },
-    // {
-    //   key: '2',
-    //   rank: '2',
-    //   grade: 'V11',
-    //   name: 'Western Gold',
-    //   location: "Southeast",
-    //   uncontrived: false,
-    //   obviousStart: false,
-    //   greatRock: false,
-    //   flatLanding: false,
-    //   tall: false,
-    //   beautifulSetting: false,
-    //   sent: false,
-    // },
-    // {
-    //   key: '3',
-    //   rank: '3',
-    //   grade: 'V10',
-    //   name: 'King Air',
-    //   location: "Yosemite",
-    //   uncontrived: true,
-    //   obviousStart: true,
-    //   greatRock: true,
-    //   flatLanding: true,
-    //   tall: true,
-    //   beautifulSetting: true,
-    //   sent: true,
-    // },
-    // {
-    //   key: '4',
-    //   rank: '4',
-    //   grade: 'V13',
-    //   name: 'Spectre',
-    //   location: "Bishop",
-    //   uncontrived: false,
-    //   obviousStart: false,
-    //   greatRock: false,
-    //   flatLanding: false,
-    //   tall: false,
-    //   beautifulSetting: false,
-    //   sent: false,
-    // }
-  ]);
+  const [dataSource, setDataSource] = useState([]);
 
   
   const defaultColumns = [

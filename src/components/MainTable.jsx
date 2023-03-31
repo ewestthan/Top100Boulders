@@ -4,7 +4,7 @@ import { MenuOutlined, CheckCircleFilled, CloseCircleOutlined} from '@ant-design
 import { DndContext } from '@dnd-kit/core';
 import { Link, useNavigate } from "react-router-dom";
 import { CSS } from '@dnd-kit/utilities';
-import {fdb} from "../firebase/initFirebase";
+import { db} from "../firebase/initFirebase";
 import { uid } from 'uid';
 import { set, ref, onValue } from 'firebase/database';
 
@@ -13,7 +13,7 @@ const MainTable = () => {
   
   useEffect(() => {
         
-    onValue(ref(fdb, 'b264b344b6e/dataSource'), snapshot => {
+    onValue(ref(db, 'b264b344b6e/dataSource'), snapshot => {
     const data = snapshot.val()
     if(data !== null){
       setDataSource(data)

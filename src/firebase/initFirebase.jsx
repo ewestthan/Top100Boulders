@@ -34,8 +34,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
-const db = getFirestore(app)
-const fdb = getDatabase(app)
+const db = getDatabase(app)
 
 
 const googleProvider = new GoogleAuthProvider();
@@ -71,14 +70,7 @@ const logInWithEmailAndPassword = async (email, password) => {
 
 const registerWithEmailAndPassword = async (name, email, password) => {
   try {
-    const res = await createUserWithEmailAndPassword(auth, email, password);
-    const user = res.user;
-    await addDoc(collection(db, "users"), {
-      uid: user.uid,
-      name,
-      authProvider: "local",
-      email,
-    });
+    await createUserWithEmailAndPassword(auth, email, password);
   } catch (err) {
     console.error(err);
     alert(err.message);
@@ -102,7 +94,6 @@ const logout = () => {
 export {
   auth,
   db,
-  fdb,
   signInWithGoogle,
   logInWithEmailAndPassword,
   registerWithEmailAndPassword,

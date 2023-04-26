@@ -5,6 +5,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import RegisterForm from './components/Register.jsx';
 import EditMainTable from './components/EditMainTable.jsx';
 import Login from './components/Login.jsx';
+import Lay from './components/Layout.jsx';
+import EditLay from './components/EditorLayout.jsx';
 
 function App() {
   return (
@@ -12,9 +14,9 @@ function App() {
       <div className="app">
       <Router>
         <Routes>
-          <Route exact path="/" element={<MainTable />} />
+          <Route exact path="/" element={<Lay />} />
           <Route exact path="/login" element={<Login />} />
-          <Route exact path="/edit" element={<EditMainTable />} />
+          <Route exact path="/edit" element={<EditLay />} />
         </Routes>
       </Router>
     </div>

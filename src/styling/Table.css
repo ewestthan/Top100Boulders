@@ -1,0 +1,127 @@
+:root {
+	--green: #b4d3b2;
+	--red: #d4371c;
+	--darkRed: #811b09;
+	--lightGray: #55575a;
+	--darkGray: #3a3b3c;
+}
+
+.table__container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.logIn__button {
+	background-color: var(--red);
+}
+
+.check {
+	color: var(--green);
+	font-size: 20px;
+}
+
+.uncheck {
+	color: var(--red);
+	font-size: 20px;
+}
+
+.editable-row {
+	background-color: #3a3b3c;
+	color: white;
+	font-weight: 600;
+	text-align: center;
+}
+
+.ant-table .ant-table-container .ant-table-content table,
+th.ant-table-cell,
+td.ant-table-cell {
+	border: none;
+	border-collapse: collapse;
+}
+
+/* .ant-table-tbody .ant-table-row:nth-child(even) {
+    background-color: #55575a;
+  } */
+.ant-table-wrapper .ant-table-tbody > tr.ant-table-row:hover > td {
+	background-color: #55575a;
+}
+
+.ant-table
+	.ant-table-container
+	.ant-table-content
+	table
+	thead.ant-table-thead
+	.ant-table-cell {
+	background-color: var(--darkRed);
+	text-align: center;
+	border: none;
+}
+
+.ant-table-wrapper .ant-table-thead > tr > th {
+	background-color: var(--darkRed);
+	color: white;
+	font-weight: 900;
+	text-align: center;
+}
+
+.ant-table .ant-table-container {
+	background-color: var(--darkGray);
+	text-align: center;
+	border: none;
+}
+.ant-table .ant-table-container .ant-table-content table {
+	background-color: var(--darkRed);
+	text-align: center;
+	border: none;
+}
+
+a.ant-typography {
+	color: var(--red);
+}
+
+a {
+	color: var(--red);
+}
+
+a:hover {
+	color: #60a65b;
+}
+
+a.ant-typography:hover {
+	color: #60a65b;
+}
+
+.ant-checkbox .ant-checkbox-inner:focus {
+	border-color: var(--red);
+}
+.ant-checkbox-checked .ant-checkbox-inner {
+	background-color: var(--red);
+	border-color: var(--red);
+}
+
+.ant-checkbox-checked:focus .ant-checkbox-inner {
+	background-color: var(--red);
+	border-color: var(--red);
+}
+
+.ant-checkbox-disabled .ant-checkbox-inner {
+	background-color: var(--red);
+	border-color: var(--red);
+}
+
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+	.ant-checkbox-checked:not(.ant-checkbox-disabled)
+	.ant-checkbox-inner {
+	background-color: #60a65b;
+}
+
+.ant-checkbox-wrapper:not(.ant-checkbox-wrapper-disabled):hover
+	.ant-checkbox-inner,
+.ant-checkbox:not(.ant-checkbox-disabled):hover .ant-checkbox-inner {
+	border-color: #60a65b;
+}
+
+.ant-input:hover {
+	border-color: #60a65b;
+}

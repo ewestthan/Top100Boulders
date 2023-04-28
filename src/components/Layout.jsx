@@ -8,7 +8,7 @@ import {
 	QuestionCircleOutlined,
 	UserOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu } from "antd";
 import React from "react";
 import MainTable from "./MainTable";
 

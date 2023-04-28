@@ -6,7 +6,7 @@ import {
 	SaveOutlined,
 	PlusCircleOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu } from "antd";
 import React, { useState } from "react";
 import EditMainTable from "./EditMainTable";
 const { Header, Sider, Content } = Layout;

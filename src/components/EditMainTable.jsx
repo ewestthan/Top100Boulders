@@ -1,14 +1,5 @@
-import {
-	Button,
-	Form,
-	Input,
-	Popconfirm,
-	Table,
-	Checkbox,
-	InputNumber,
-	Typography,
-} from "antd";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { Form, Input, Popconfirm, Table, Checkbox, Typography } from "antd";
+import React, { useEffect, useState } from "react";
 import {
 	MenuOutlined,
 	CheckCircleFilled,
@@ -22,9 +13,8 @@ import {
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { logout, db, auth } from "../firebase/initFirebase";
-import { uid } from "uid";
-import { set, ref, onValue, update } from "firebase/database";
+import { db, auth } from "../firebase/initFirebase";
+import { ref, onValue, update } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import "../styling/Table.css";
@@ -135,7 +125,7 @@ const EditableCell = ({
 };
 
 const MainTable = ({ addTrigger, writeTrigger }) => {
-	const [user, loading, error] = useAuthState(auth);
+	const [user, loading] = useAuthState(auth);
 	const navigate = useNavigate();
 	const [deleted, setDeleted] = useState(0);
 	const [expandedKey, setExpandedKey] = useState(null);

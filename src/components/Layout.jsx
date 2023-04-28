@@ -1,36 +1,19 @@
 import "../styling/Layout.css";
-import {
-	Button,
-	Form,
-	Input,
-	Popconfirm,
-	Table,
-	Checkbox,
-	InputNumber,
-	Typography,
-} from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Button } from "antd";
+import { Link } from "react-router-dom";
 import { ReactComponent as ReactLogo } from "../logo.svg";
 
 import {
 	HomeOutlined,
-	MenuFoldOutlined,
-	MenuUnfoldOutlined,
-	NodeExpandOutlined,
 	QuestionCircleOutlined,
-	UploadOutlined,
 	UserOutlined,
-	VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
-import React, { useState } from "react";
+import React from "react";
 import MainTable from "./MainTable";
+
 const { Header, Sider, Content } = Layout;
 const Lay = () => {
-	const {
-		token: { colorBgContainer },
-	} = theme.useToken();
-
 	return (
 		<Layout>
 			<Sider

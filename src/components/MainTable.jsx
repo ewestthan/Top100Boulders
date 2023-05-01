@@ -1,6 +1,10 @@
-import { Table } from "antd";
+import { Table, Button } from "antd";
 import React, { useEffect, useState } from "react";
-import { CheckCircleFilled, CloseCircleOutlined } from "@ant-design/icons";
+import {
+	CheckCircleFilled,
+	CloseCircleOutlined,
+	FilterFilled,
+} from "@ant-design/icons";
 import { db } from "../firebase/initFirebase";
 import { ref, onValue } from "firebase/database";
 import "../styling/Table.css";
@@ -8,7 +12,16 @@ import "../styling/Table.css";
 const MainTable = () => {
 	const [expandedKey, setExpandedKey] = useState(null);
 	const onExpand = (_, { key }) => setExpandedKey(key);
-
+	const [filter, setFilter] = useState({
+		uncontrived: false,
+		obviousStart: false,
+		greatRock: false,
+		flatLanding: false,
+		tall: false,
+		beautifulSetting: false,
+		sent: false,
+	});
+	console.log(filter);
 	useEffect(() => {
 		onValue(ref(db, "dataSource"), (snapshot) => {
 			const data = snapshot.val();
@@ -49,11 +62,39 @@ const MainTable = () => {
 			// editable: true,
 		},
 		{
-			title: "Uncontrived",
+			title: () => (
+				<div>
+					<span>
+						Uncontrived{" "}
+						<Button
+							icon={<CheckCircleFilled />}
+							style={{
+								backgroundColor: "#811b09",
+								color: filter.uncontrived
+									? "#b4d3b2"
+									: "#55575a",
+								border: "none",
+								marginLeft: "5px",
+							}}
+							size="small"
+							onClick={(e) =>
+								setFilter({
+									uncontrived: !filter.uncontrived,
+									obviousStart: filter.obviousStart,
+									greatRock: filter.greatRock,
+									flatLanding: filter.flatLanding,
+									tall: filter.tall,
+									beautifulSetting: filter.beautifulSetting,
+									sent: filter.sent,
+								})
+							}
+						/>
+					</span>
+				</div>
+			),
 			dataIndex: "uncontrived",
 			key: "uncontrived",
-			width: 150,
-			// editable: true,
+			width: 160,
 			inputType: "boolean",
 			render: (text) =>
 				text ? (
@@ -61,12 +102,44 @@ const MainTable = () => {
 				) : (
 					<CloseCircleOutlined className="uncheck" />
 				),
+			filteredValue: filter.uncontrived ? [true] : [],
+
+			onFilter: (_value, record) => record.uncontrived === true,
+			// filteredValue: [false, true],
 		},
 		{
-			title: "Obvious Start",
+			title: () => (
+				<div>
+					<span>
+						Obvious Start{" "}
+						<Button
+							icon={<CheckCircleFilled />}
+							style={{
+								backgroundColor: "#811b09",
+								color: filter.obviousStart
+									? "#b4d3b2"
+									: "#55575a",
+								border: "none",
+								marginLeft: "5px",
+							}}
+							size="small"
+							onClick={(e) =>
+								setFilter({
+									uncontrived: filter.uncontrived,
+									obviousStart: !filter.obviousStart,
+									greatRock: filter.greatRock,
+									flatLanding: filter.flatLanding,
+									tall: filter.tall,
+									beautifulSetting: filter.beautifulSetting,
+									sent: filter.sent,
+								})
+							}
+						/>
+					</span>
+				</div>
+			),
 			dataIndex: "obviousStart",
 			key: "obviousStart",
-			// editable: true,
 			inputType: "boolean",
 			render: (text) =>
 				text ? (
@@ -74,9 +147,39 @@ const MainTable = () => {
 				) : (
 					<CloseCircleOutlined className="uncheck" />
 				),
+			filteredValue: filter.obviousStart ? [true] : [],
+
+			onFilter: (_value, record) => record.obviousStart === true,
 		},
 		{
-			title: "Great Rock",
+			title: () => (
+				<div>
+					<span>
+						Great Rock{" "}
+						<Button
+							icon={<CheckCircleFilled />}
+							style={{
+								backgroundColor: "#811b09",
+								color: filter.greatRock ? "#b4d3b2" : "#55575a",
+								border: "none",
+								marginLeft: "5px",
+							}}
+							size="small"
+							onClick={(e) =>
+								setFilter({
+									uncontrived: filter.uncontrived,
+									obviousStart: filter.obviousStart,
+									greatRock: !filter.greatRock,
+									flatLanding: filter.flatLanding,
+									tall: filter.tall,
+									beautifulSetting: filter.beautifulSetting,
+									sent: filter.sent,
+								})
+							}
+						/>
+					</span>
+				</div>
+			),
 			dataIndex: "greatRock",
 			key: "greatRock",
 			// editable: true,
@@ -87,9 +190,41 @@ const MainTable = () => {
 				) : (
 					<CloseCircleOutlined className="uncheck" />
 				),
+			filteredValue: filter.greatRock ? [true] : [],
+
+			onFilter: (_value, record) => record.greatRock === true,
 		},
 		{
-			title: "Flat Landing",
+			title: () => (
+				<div>
+					<span>
+						Flat Landing{" "}
+						<Button
+							icon={<CheckCircleFilled />}
+							style={{
+								backgroundColor: "#811b09",
+								color: filter.flatLanding
+									? "#b4d3b2"
+									: "#55575a",
+								border: "none",
+								marginLeft: "5px",
+							}}
+							size="small"
+							onClick={(e) =>
+								setFilter({
+									uncontrived: filter.uncontrived,
+									obviousStart: filter.obviousStart,
+									greatRock: filter.greatRock,
+									flatLanding: !filter.flatLanding,
+									tall: filter.tall,
+									beautifulSetting: filter.beautifulSetting,
+									sent: filter.sent,
+								})
+							}
+						/>
+					</span>
+				</div>
+			),
 			dataIndex: "flatLanding",
 			key: "flatLanding",
 			// editable: true,
@@ -100,9 +235,39 @@ const MainTable = () => {
 				) : (
 					<CloseCircleOutlined className="uncheck" />
 				),
+			filteredValue: filter.flatLanding ? [true] : [],
+
+			onFilter: (_value, record) => record.flatLanding === true,
 		},
 		{
-			title: "Tall",
+			title: () => (
+				<div>
+					<span>
+						Tall{" "}
+						<Button
+							icon={<CheckCircleFilled />}
+							style={{
+								backgroundColor: "#811b09",
+								color: filter.tall ? "#b4d3b2" : "#55575a",
+								border: "none",
+								marginLeft: "5px",
+							}}
+							size="small"
+							onClick={(e) =>
+								setFilter({
+									uncontrived: filter.uncontrived,
+									obviousStart: filter.obviousStart,
+									greatRock: filter.greatRock,
+									flatLanding: filter.flatLanding,
+									tall: !filter.tall,
+									beautifulSetting: filter.beautifulSetting,
+									sent: filter.sent,
+								})
+							}
+						/>
+					</span>
+				</div>
+			),
 			dataIndex: "tall",
 			key: "tall",
 			// editable: true,
@@ -113,9 +278,41 @@ const MainTable = () => {
 				) : (
 					<CloseCircleOutlined className="uncheck" />
 				),
+			filteredValue: filter.tall ? [true] : [],
+
+			onFilter: (_value, record) => record.tall === true,
 		},
 		{
-			title: "Beautiful Setting",
+			title: () => (
+				<div>
+					<span>
+						Beautiful Setting{" "}
+						<Button
+							icon={<CheckCircleFilled />}
+							style={{
+								backgroundColor: "#811b09",
+								color: filter.beautifulSetting
+									? "#b4d3b2"
+									: "#55575a",
+								border: "none",
+								marginLeft: "5px",
+							}}
+							size="small"
+							onClick={(e) =>
+								setFilter({
+									uncontrived: filter.uncontrived,
+									obviousStart: filter.obviousStart,
+									greatRock: filter.greatRock,
+									flatLanding: filter.flatLanding,
+									tall: filter.tall,
+									beautifulSetting: !filter.beautifulSetting,
+									sent: filter.sent,
+								})
+							}
+						/>
+					</span>
+				</div>
+			),
 			dataIndex: "beautifulSetting",
 			key: "beautifulSetting",
 			// editable: true,
@@ -126,9 +323,39 @@ const MainTable = () => {
 				) : (
 					<CloseCircleOutlined className="uncheck" />
 				),
+			filteredValue: filter.beautifulSetting ? [true] : [],
+
+			onFilter: (_value, record) => record.beautifulSetting === true,
 		},
 		{
-			title: "Sent",
+			title: () => (
+				<div>
+					<span>
+						Sent{" "}
+						<Button
+							icon={<CheckCircleFilled />}
+							style={{
+								backgroundColor: "#811b09",
+								color: filter.sent ? "#b4d3b2" : "#55575a",
+								border: "none",
+								marginLeft: "5px",
+							}}
+							size="small"
+							onClick={(e) =>
+								setFilter({
+									uncontrived: filter.uncontrived,
+									obviousStart: filter.obviousStart,
+									greatRock: filter.greatRock,
+									flatLanding: filter.flatLanding,
+									tall: filter.tall,
+									beautifulSetting: filter.beautifulSetting,
+									sent: !filter.sent,
+								})
+							}
+						/>
+					</span>
+				</div>
+			),
 			dataIndex: "sent",
 			key: "sent",
 			// editable: true,
@@ -139,6 +366,9 @@ const MainTable = () => {
 				) : (
 					<CloseCircleOutlined className="uncheck" />
 				),
+			filteredValue: filter.sent ? [true] : [],
+
+			onFilter: (_value, record) => record.sent === true,
 		},
 	];
 
@@ -148,7 +378,8 @@ const MainTable = () => {
 				style={{
 					display: "flex",
 					justifyContent: "center",
-				}}>
+				}}
+			>
 				{record.link ? (
 					<iframe
 						src={"https://www.youtube.com/embed/" + record.link}
@@ -172,7 +403,8 @@ const MainTable = () => {
 						margin: "30px",
 						textAlign: "left",
 						maxWidth: "500px",
-					}}>
+					}}
+				>
 					{record.description}
 				</p>
 			</div>

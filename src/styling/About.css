@@ -1,0 +1,19 @@
+h1 {
+	color: white;
+	font-size: 50px;
+	/* margin-left: 2em; */
+	margin-bottom: 0.5em;
+	margin-top: 0;
+}
+p {
+	color: white;
+	/* margin-left: 5em; */
+	font-size: 20px;
+	margin-top: 0;
+}
+#about-container {
+	padding: 3em;
+	background-color: #18191a;
+	justify-content: center;
+	border-radius: 3em;
+}

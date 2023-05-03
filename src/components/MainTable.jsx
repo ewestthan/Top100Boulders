@@ -411,10 +411,19 @@ const MainTable = () => {
 		);
 	};
 
+	let locale = {
+		emptyText: (
+			<span>
+				<p>Whoopsie</p>
+			</span>
+		),
+	};
+
 	return (
 		<div>
 			<div className="table__container">
 				<Table
+					locale={locale}
 					className="table"
 					rowKey="key"
 					dataSource={dataSource}

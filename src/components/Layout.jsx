@@ -33,11 +33,8 @@ const Lay = () => {
 				<ReactLogo
 					style={{
 						height: 50,
-
-						// marginLeft,
 						marginTop: 16,
 						width: 200,
-						// background: 'rgba(255, 255, 255, 0.2)',
 					}}
 				/>
 

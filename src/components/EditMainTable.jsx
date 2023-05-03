@@ -98,7 +98,8 @@ const EditableCell = ({
 						valuePropName={dataIndex ? "checked" : ""}
 						style={{
 							margin: 0,
-						}}>
+						}}
+					>
 						{inputNode}
 					</Form.Item>
 				) : (
@@ -113,7 +114,8 @@ const EditableCell = ({
 								required: true,
 								message: `Please Input ${title}!`,
 							},
-						]}>
+						]}
+					>
 						{inputNode}
 					</Form.Item>
 				)
@@ -286,20 +288,23 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 		},
 		{
 			dataIndex: "operation",
+			width: 80,
 			render: (_, record) => {
 				const editable = isEditing(record);
 				return editable ? (
-					<span style={{ backgroundColor: "gold" }}>
+					<span>
 						<Typography.Link
 							onClick={() => handleSave(record.key)}
 							style={{
 								marginRight: 8,
-							}}>
+							}}
+						>
 							Save
 						</Typography.Link>
 						<Popconfirm
 							title="Sure to cancel?"
-							onConfirm={handleCancel}>
+							onConfirm={handleCancel}
+						>
 							<a>Cancel</a>
 						</Popconfirm>
 					</span>
@@ -307,12 +312,14 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 					<span>
 						<Typography.Link
 							disabled={editingKey !== ""}
-							onClick={() => handleEdit(record)}>
+							onClick={() => handleEdit(record)}
+						>
 							Edit
 						</Typography.Link>
 						<Popconfirm
 							title="Sure to delete?"
-							onConfirm={() => handleDelete(record.key)}>
+							onConfirm={() => handleDelete(record.key)}
+						>
 							<a> Delete</a>
 						</Popconfirm>
 					</span>
@@ -472,18 +479,21 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 					display: "flex",
 					justifyContent: "center",
 					alignItems: "center",
-				}}>
+				}}
+			>
 				<div
 					style={{
 						margin: "30px",
-					}}>
+					}}
+				>
 					<p
 						style={{
 							color: "white",
 							textAlign: "left",
 							fontWeight: "900",
 							marginTop: "0",
-						}}>
+						}}
+					>
 						Youtube Video Id:
 					</p>
 					<EditableCell
@@ -496,14 +506,16 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 				<div
 					style={{
 						margin: "30px",
-					}}>
+					}}
+				>
 					<p
 						style={{
 							color: "white",
 							textAlign: "left",
 							fontWeight: "900",
 							marginTop: "0",
-						}}>
+						}}
+					>
 						Description:
 					</p>
 					<EditableCell
@@ -519,7 +531,8 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 				style={{
 					display: "flex",
 					justifyContent: "center",
-				}}>
+				}}
+			>
 				{record.link ? (
 					<iframe
 						src={"https://www.youtube.com/embed/" + record.link}
@@ -544,23 +557,33 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 						margin: "30px",
 						textAlign: "left",
 						maxWidth: "500px",
-					}}>
+					}}
+				>
 					{record.description}
 				</p>
 			</div>
 		);
 	};
 
+	let locale = {
+		emptyText: (
+			<span>
+				<p>Whoopsie</p>
+			</span>
+		),
+	};
 	return (
 		<div>
 			<DndContext onDragEnd={onDragEnd}>
 				<SortableContext
 					// rowKey array
 					items={dataSource.map((i) => i.key)}
-					strategy={verticalListSortingStrategy}>
+					strategy={verticalListSortingStrategy}
+				>
 					<Form form={form} component={false}>
 						{/* <div className='table__container'> */}
 						<Table
+							locale={locale}
 							components={{
 								body: {
 									row: Row,

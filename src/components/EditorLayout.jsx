@@ -1,6 +1,7 @@
 import "../styling/Layout.css";
 import { Button } from "antd";
 import { logout } from "../firebase/initFirebase";
+import { ReactComponent as ReactLogo } from "../logo.svg";
 import {
 	UserOutlined,
 	SaveOutlined,
@@ -29,12 +30,13 @@ const EditLay = () => {
 					left: 0,
 					top: 0,
 					bottom: 0,
-				}}>
-				<div
+				}}
+			>
+				<ReactLogo
 					style={{
-						height: 32,
-						margin: 16,
-						background: "rgba(255, 255, 255, 0.2)",
+						height: 50,
+						marginTop: 16,
+						width: 200,
 					}}
 				/>
 				<Menu theme="dark" mode="inline" style={{ marginTop: 50 }}>
@@ -45,11 +47,15 @@ const EditLay = () => {
 						type="primary"
 						style={{
 							marginBottom: 16,
-							marginLeft: 15,
+							marginLeft: 20,
 							backgroundColor: "transparent",
-							color: "#B4D3B2",
+							color: "#FE1C1E",
+							border: "none",
 							boxShadow: "none",
-						}}>
+							fontWeight: 900,
+							fontSize: 20,
+						}}
+					>
 						<SaveOutlined />
 						Save Table
 					</Button>
@@ -61,12 +67,15 @@ const EditLay = () => {
 						type="primary"
 						style={{
 							marginBottom: 16,
-							marginLeft: 15,
+							marginLeft: 20,
 							backgroundColor: "transparent",
-							border: 0,
-							color: "#B4D3B2",
+							color: "#FE1C1E",
+							border: "none",
 							boxShadow: "none",
-						}}>
+							fontWeight: 900,
+							fontSize: 20,
+						}}
+					>
 						<PlusCircleOutlined />
 						Add Row
 					</Button>
@@ -77,23 +86,29 @@ const EditLay = () => {
 				className="site-layout"
 				style={{
 					marginLeft: 200,
-				}}>
+				}}
+			>
 				<Header
 					style={{
 						padding: 0,
-						position: "sticky",
 						top: 0,
 						zIndex: 4,
-					}}>
+					}}
+				>
 					<Button
 						onClick={logout}
 						style={{
-							paddingTop: 20,
 							float: "right",
+							marginTop: 10,
+							marginRight: 20,
 							backgroundColor: "transparent",
-							border: 0,
-							color: "#B4D3B2",
-						}}>
+							color: "#FE1C1E",
+							border: "none",
+							boxShadow: "none",
+							fontWeight: 900,
+							fontSize: 20,
+						}}
+					>
 						<UserOutlined /> Logout
 					</Button>
 				</Header>

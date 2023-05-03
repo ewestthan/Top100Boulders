@@ -71,7 +71,7 @@ td.ant-table-cell {
 	border: none;
 }
 .ant-table .ant-table-container .ant-table-content table {
-	background-color: var(--darkRed);
+	background-color: var(--darkGray);
 	text-align: center;
 	border: none;
 }
@@ -82,10 +82,6 @@ a.ant-typography {
 
 a {
 	color: var(--red);
-}
-
-a:hover {
-	color: #60a65b;
 }
 
 a.ant-typography:hover {
@@ -124,4 +120,15 @@ a.ant-typography:hover {
 
 .ant-input:hover {
 	border-color: #60a65b;
+}
+
+.ant-table-wrapper .ant-table-tbody > tr > th,
+.ant-table-wrapper .ant-table-tbody > tr > td {
+	background-color: #3a3b3c;
+	color: white;
+	font-weight: 600;
+}
+
+.ant-table-wrapper .ant-table-tbody > tr.ant-table-placeholder:hover > td {
+	background-color: #55575a;
 }

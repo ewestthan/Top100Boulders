@@ -1,40 +1,48 @@
-html{
-  background-color: #242526;
+html {
+	background-color: #242526;
 }
 .login {
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .login__container {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    background-color: #18191A;
-    padding: 50px;
-    border-radius: 20px;
-    box-shadow: 0px 0px 8px white;
-  }
-  .login__textBox {
-    padding: 10px;
-    font-size: 18px;
-    margin-bottom: 15px;
-  }
-  .login__btn {
-    padding: 10px;
-    font-size: 18px;
-    margin-bottom: 10px;
-    border: none;
-    color: white;
-    border-radius: 5em;
-    background-color: black;
-  }
-  .login__google {
-    background-color: #B4D3B2;
-    color: black;
-  }
-  .login div {
-    margin-top: 7px;
-  }
+	height: 100vh;
+	width: 100vw;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.login__container {
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	background-color: #18191a;
+	padding: 50px;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	border-radius: 20px;
+	box-shadow: 0px 0px 8px white;
+}
+.login__textBox {
+	padding: 10px;
+	font-size: 18px;
+	margin-bottom: 15px;
+}
+.login__textBox:focus-visible {
+	outline: #fe1c1e auto 1px;
+}
+
+.login__btn {
+	padding: 10px;
+	font-size: 18px;
+	margin-bottom: 10px;
+	border: none;
+	color: white;
+	border-radius: 5em;
+	background-color: black;
+	cursor: pointer;
+}
+.login div {
+	margin-top: 7px;
+}
+
+.login-error {
+	text-align: center;
+	color: #fe1c1e;
+}

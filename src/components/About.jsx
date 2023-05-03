@@ -4,8 +4,8 @@ import "../styling/About.css";
 const About = () => {
 	return (
 		<div id="about-container">
-			<h1>What's the Deal??</h1>
-			<p>
+			<h1 id="about-header">What's the Deal??</h1>
+			<p id="about-content">
 				Sed ut perspiciatis unde omnis iste natus error sit voluptatem
 				accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
 				quae ab illo inventore veritatis et quasi architecto beatae
@@ -22,8 +22,8 @@ const About = () => {
 				molestiae consequatur, vel illum qui dolorem eum fugiat quo
 				voluptas nulla pariatur?
 			</p>
-			<h1>Who Are We??</h1>
-			<p>
+			<h1 id="about-header">Who Are We??</h1>
+			<p id="about-content">
 				Sed ut perspiciatis unde omnis iste natus error sit voluptatem
 				accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
 				quae ab illo inventore veritatis et quasi architecto beatae

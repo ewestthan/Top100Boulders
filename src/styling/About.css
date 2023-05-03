@@ -1,11 +1,11 @@
-h1 {
+#about-header {
 	color: white;
 	font-size: 50px;
 	/* margin-left: 2em; */
 	margin-bottom: 0.5em;
 	margin-top: 0;
 }
-p {
+#about-content {
 	color: white;
 	/* margin-left: 5em; */
 	font-size: 20px;

@@ -572,6 +572,7 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 			</span>
 		),
 	};
+
 	return (
 		<div>
 			<DndContext onDragEnd={onDragEnd}>

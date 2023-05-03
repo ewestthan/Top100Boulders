@@ -436,6 +436,8 @@ const MainTable = () => {
 						expandRowByClick: true,
 						onExpand: onExpand,
 						expandedRowKeys: [expandedKey],
+						rowExpandable: (record) =>
+							record.description || record.link === "",
 					}}
 					expandIconAsCell={false}
 					expandIconColumnIndex={-1}

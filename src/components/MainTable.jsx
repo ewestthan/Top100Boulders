@@ -1,10 +1,6 @@
 import { Table, Button } from "antd";
 import React, { useEffect, useState } from "react";
-import {
-	CheckCircleFilled,
-	CloseCircleOutlined,
-	FilterFilled,
-} from "@ant-design/icons";
+import { CheckCircleFilled, CloseCircleOutlined } from "@ant-design/icons";
 import { db } from "../firebase/initFirebase";
 import { ref, onValue } from "firebase/database";
 import "../styling/Table.css";

@@ -53,6 +53,7 @@ const signInWithGoogle = async () => {
 const logInWithEmailAndPassword = async (email, password) => {
 	try {
 		await signInWithEmailAndPassword(auth, email, password);
+		return true;
 	} catch (err) {
 		return false;
 	}

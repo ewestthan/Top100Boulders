@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as ReactLogo } from "../logo.svg";
+import ReactLoading from "react-loading";
 
 import {
 	auth,
@@ -18,10 +19,10 @@ function Login() {
 	const navigate = useNavigate();
 	const [showError, setShowError] = useState(false);
 	const isMounted = useRef(false);
+	const [isLoggingIn, setIsLoggingIn] = useState(false);
 
 	useEffect(() => {
 		if (loading) {
-			// maybe trigger a loading screen
 			return;
 		}
 		if (user) {
@@ -35,11 +36,19 @@ function Login() {
 	// };
 
 	const handleLogin = () => {
-		setShowError(true);
-		logInWithEmailAndPassword(email, password);
+		logInWithEmailAndPassword(email, password).then((promise) =>
+			promise ? setIsLoggingIn(true) : setShowError(true)
+		);
 	};
 
-	return (
+	return isLoggingIn ? (
+		<ReactLoading
+			type="spinningBubbles"
+			color="#fe1c1e"
+			height={400}
+			width={200}
+		/>
+	) : (
 		<div className="login">
 			<div className="login__container">
 				<ReactLogo
@@ -51,6 +60,7 @@ function Login() {
 						width: 200,
 					}}
 				/>
+				;
 				<input
 					type="text"
 					className="login__textBox"

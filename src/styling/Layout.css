@@ -1,37 +1,33 @@
 .trigger {
-    padding: 0 24px;
-    font-size: 18px;
-    line-height: 64px;
-    color: #B4D3B2;
-    cursor: pointer;
-    transition: color 0.3s;
-  }
-  
-  #components-layout-demo-custom-trigger .trigger:hover {
-    color: white;
-  }
-  
-  #components-layout-demo-custom-trigger .logo {
-    height: 52px;
-    margin: 16px;
-    background: rgba(255, 255, 255, 0.3);
-  }
+	padding: 0 24px;
+	font-size: 18px;
+	line-height: 64px;
+	color: #b4d3b2;
+	cursor: pointer;
+	transition: color 0.3s;
+}
 
-  .site-layout{
-      margin-left: auto;
-  }
+#components-layout-demo-custom-trigger .trigger:hover {
+	color: white;
+}
 
-  .ant-layout .ant-layout-sider {
-    background-color:#242526;
-  }
-  .ant-layout-header{
-    background-color:#242526;
-  }
+#components-layout-demo-custom-trigger .logo {
+	height: 52px;
+	margin: 16px;
+	background: rgba(255, 255, 255, 0.3);
+}
 
-  .ant-menu-dark{
-    background-color:#242526;
-  }
+.ant-layout .ant-layout-sider {
+	background-color: #242526;
+}
+.ant-layout-header {
+	background-color: #242526;
+}
 
-  .ant-layout{
-    background-color:#242526
-  }
+.ant-menu-dark {
+	background-color: #242526;
+}
+
+.ant-layout {
+	background-color: #242526;
+}

@@ -1,10 +1,11 @@
 import React from "react";
 import "../styling/About.css";
-
+import bullet from "../assets/bullet.png";
 const About = () => {
 	return (
 		<div id="about-container">
 			<h1 id="about-header">What's the Deal??</h1>
+
 			<p id="about-content">
 				Sed ut perspiciatis unde omnis iste natus error sit voluptatem
 				accusantium doloremque laudantium, totam rem aperiam, eaque ipsa

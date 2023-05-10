@@ -6,10 +6,19 @@
 	--darkGray: #3a3b3c;
 }
 
+.ant-table-wrapper .ant-table-thead > tr > td {
+	background-color: var(--darkRed);
+}
+img.header-icon {
+	height: 50px;
+	width: 50px;
+}
+
 .table__container {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-direction: column;
 }
 
 .logIn__button {

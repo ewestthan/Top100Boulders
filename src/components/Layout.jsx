@@ -2,21 +2,34 @@ import "../styling/Layout.css";
 import { Button } from "antd";
 import { Link } from "react-router-dom";
 import { ReactComponent as ReactLogo } from "../logo.svg";
-
+import LongerLogo from "../assets/Top100logowide.png";
 import {
 	HomeOutlined,
 	QuestionCircleOutlined,
 	UserOutlined,
+	FileSyncOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import React, { useEffect, useState } from "react";
 import MainTable from "./MainTable";
 import About from "./About";
+import ChangeLog from "./ChangeLog";
 
 const { Header, Sider, Content } = Layout;
 const Lay = () => {
 	const [content, setContent] = useState("home");
 	useEffect(() => {}, [setContent]);
+
+	function renderSwitch(param) {
+		switch (param) {
+			case "about":
+				return <About />;
+			case "changeLog":
+				return <ChangeLog />;
+			default:
+				return <MainTable />;
+		}
+	}
 	return (
 		<Layout>
 			<Sider
@@ -30,14 +43,22 @@ const Lay = () => {
 					justifyContent: "center",
 				}}
 			>
-				<ReactLogo
+				{/* <LongerLogo
+				style={{
+					height: 50,
+					marginTop: 16,
+					width: 200,
+				}}
+				/> */}
+				<img
 					style={{
 						height: 50,
 						marginTop: 16,
-						width: 200,
+						marginLeft: 50,
+						width: 100,
 					}}
+					src={LongerLogo}
 				/>
-
 				<Menu
 					theme="dark"
 					mode="inline"
@@ -48,7 +69,7 @@ const Lay = () => {
 					<Button
 						style={{
 							marginBottom: 20,
-							marginLeft: 40,
+							marginLeft: 15,
 							backgroundColor: "transparent",
 							color: "#FE1C1E",
 							border: "none",
@@ -63,7 +84,7 @@ const Lay = () => {
 					<Button
 						style={{
 							marginBottom: 16,
-							marginLeft: 40,
+							marginLeft: 15,
 							backgroundColor: "transparent",
 							color: "#FE1C1E",
 							border: "none",
@@ -74,6 +95,21 @@ const Lay = () => {
 						onClick={() => setContent("about")}
 					>
 						<QuestionCircleOutlined /> About
+					</Button>
+					<Button
+						style={{
+							marginBottom: 16,
+							marginLeft: 15,
+							backgroundColor: "transparent",
+							color: "#FE1C1E",
+							border: "none",
+							boxShadow: "none",
+							fontWeight: 900,
+							fontSize: 20,
+						}}
+						onClick={() => setContent("changeLog")}
+					>
+						<FileSyncOutlined /> Change Log
 					</Button>
 				</Menu>
 			</Sider>
@@ -110,7 +146,7 @@ const Lay = () => {
 					</Button>
 				</Header>
 				<Content style={{ marginRight: 30 }}>
-					{content == "home" ? <MainTable /> : <About />}
+					{renderSwitch(content)}
 				</Content>
 			</Layout>
 		</Layout>

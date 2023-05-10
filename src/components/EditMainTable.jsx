@@ -1,4 +1,12 @@
-import { Form, Input, Popconfirm, Table, Checkbox, Typography } from "antd";
+import {
+	Form,
+	Input,
+	Popconfirm,
+	Table,
+	Checkbox,
+	Typography,
+	Modal,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import {
 	MenuOutlined,
@@ -14,7 +22,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { db, auth } from "../firebase/initFirebase";
-import { ref, onValue, update } from "firebase/database";
+import { ref, onValue, update, push, child } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import "../styling/Table.css";
@@ -136,13 +144,16 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 	const [form] = Form.useForm();
 	const [editingKey, setEditingKey] = useState("");
 	const isEditing = (record) => record.key === editingKey;
+	const [open, setOpen] = useState(false);
+	const [confirmLoading, setConfirmLoading] = useState(false);
+	const current = new Date();
 
 	useEffect(() => {
 		if (addTrigger) {
 			handleAdd();
 		}
 		if (writeTrigger) {
-			writeToDatabase();
+			showModal();
 		}
 	}, [addTrigger, writeTrigger]);
 
@@ -160,43 +171,78 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 		});
 	}, []);
 
-	const writeToDatabase = async (e) => {
+	const writeToDatabase = async (values) => {
 		try {
-			update(ref(db), { dataSource: dataSource });
+			const newRef = push(child(ref(db), "changeLog")).key;
+			const updates = {};
+			updates["/changeLog/" + newRef] = {
+				description: values.change,
+				date: `${
+					current.getMonth() + 1
+				}-${current.getDate()}-${current.getFullYear()}`,
+			};
+			updates["/newData/"] = dataSource;
+
+			update(ref(db), updates);
 		} catch (e) {
 			console.log(e);
 		}
+
+		console.log(values);
+		setConfirmLoading(true);
+		setTimeout(() => {
+			setOpen(false);
+			setConfirmLoading(false);
+		}, 2000);
 	};
 
 	const defaultColumns = [
 		{
 			key: "sort",
+			width: 70,
 		},
 		{
 			title: "Rank",
 			dataIndex: "rank",
 			key: "rank",
+			width: 80,
+		},
+		{
+			title: "Sent",
+			dataIndex: "sent",
+			key: "sent",
+			editable: true,
+			inputType: "boolean",
+			render: (text) =>
+				text ? (
+					<CheckCircleFilled className="check" />
+				) : (
+					<CloseCircleOutlined className="uncheck" />
+				),
 		},
 		{
 			title: "Grade",
 			dataIndex: "grade",
 			key: "grade",
 			editable: true,
+			width: 80,
 		},
 		{
 			title: "Name",
 			dataIndex: "name",
 			key: "name",
 			editable: true,
+			width: 120,
 		},
 		{
 			title: "Location",
 			dataIndex: "location",
 			key: "location",
 			editable: true,
+			width: 120,
 		},
 		{
-			title: "Uncontrived",
+			title: "Line",
 			dataIndex: "uncontrived",
 			key: "uncontrived",
 			editable: true,
@@ -209,7 +255,7 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 				),
 		},
 		{
-			title: "Obvious Start",
+			title: "Start",
 			dataIndex: "obviousStart",
 			key: "obviousStart",
 			editable: true,
@@ -222,7 +268,7 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 				),
 		},
 		{
-			title: "Great Rock",
+			title: "Rock",
 			dataIndex: "greatRock",
 			key: "greatRock",
 			editable: true,
@@ -235,7 +281,7 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 				),
 		},
 		{
-			title: "Flat Landing",
+			title: "Landing",
 			dataIndex: "flatLanding",
 			key: "flatLanding",
 			editable: true,
@@ -261,22 +307,9 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 				),
 		},
 		{
-			title: "Beautiful Setting",
+			title: "Setting",
 			dataIndex: "beautifulSetting",
 			key: "beautifulSetting",
-			editable: true,
-			inputType: "boolean",
-			render: (text) =>
-				text ? (
-					<CheckCircleFilled className="check" />
-				) : (
-					<CloseCircleOutlined className="uncheck" />
-				),
-		},
-		{
-			title: "Sent",
-			dataIndex: "sent",
-			key: "sent",
 			editable: true,
 			inputType: "boolean",
 			render: (text) =>
@@ -343,6 +376,7 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 			sent: "",
 			description: "",
 			link: "",
+			fa: "",
 			...record,
 		});
 		setEditingKey(record.key);
@@ -408,6 +442,7 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 			sent: false,
 			link: "",
 			description: "",
+			fa: "",
 		};
 		setDataSource([...dataSource, newData]);
 	};
@@ -484,6 +519,7 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 				<div
 					style={{
 						margin: "30px",
+						marginTop: "10px",
 					}}
 				>
 					<p
@@ -491,7 +527,25 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 							color: "white",
 							textAlign: "left",
 							fontWeight: "900",
-							marginTop: "0",
+							marginTop: "10px",
+							marginBottom: "5px",
+						}}
+					>
+						First Ascent:
+					</p>
+					<EditableCell
+						editing={true}
+						dataIndex={"fa"}
+						inputType={"text"}
+						record={record}
+					/>
+					<p
+						style={{
+							color: "white",
+							textAlign: "left",
+							fontWeight: "900",
+							marginTop: "10px",
+							marginBottom: "5px",
 						}}
 					>
 						Youtube Video Id:
@@ -506,6 +560,7 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 				<div
 					style={{
 						margin: "30px",
+						marginTop: "10px",
 					}}
 				>
 					<p
@@ -548,19 +603,34 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 				) : (
 					<p></p>
 				)}
-
-				<p
-					style={{
-						color: "white",
-						fontWeight: "800",
-						alignItems: "center",
-						margin: "30px",
-						textAlign: "left",
-						maxWidth: "500px",
-					}}
-				>
-					{record.description}
-				</p>
+				<div>
+					<p
+						style={{
+							color: "white",
+							fontWeight: "800",
+							alignItems: "center",
+							margin: "30px",
+							marginBottom: "0",
+							textAlign: "left",
+							maxWidth: "500px",
+						}}
+					>
+						First Ascent: {record.fa}
+					</p>
+					<p
+						style={{
+							color: "white",
+							fontWeight: "800",
+							alignItems: "center",
+							margin: "30px",
+							marginTop: "10px",
+							textAlign: "left",
+							maxWidth: "500px",
+						}}
+					>
+						{record.description}
+					</p>
+				</div>
 			</div>
 		);
 	};
@@ -573,8 +643,42 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 		),
 	};
 
+	const showModal = () => {
+		setOpen(true);
+	};
+	// const handleSubmit = (values) => {
+	// 	setChangeLog("The modal will be closed after two seconds");
+	// };
+	const closeModal = () => {
+		console.log("Clicked cancel button");
+		setOpen(false);
+	};
+
 	return (
 		<div>
+			<Modal
+				title="Save Table"
+				open={open}
+				onOk={() => {
+					form.validateFields()
+						.then((values) => {
+							form.resetFields();
+							writeToDatabase(values);
+						})
+						.catch((info) => {
+							console.log("Validate Failed:", info);
+						});
+				}}
+				confirmLoading={confirmLoading}
+				onCancel={closeModal}
+				centered
+			>
+				<Form form={form} name="form_in_modal">
+					<Form.Item name="change">
+						<TextArea rows={4} style={{ width: "350px" }} />
+					</Form.Item>
+				</Form>
+			</Modal>
 			<DndContext onDragEnd={onDragEnd}>
 				<SortableContext
 					// rowKey array
@@ -591,6 +695,7 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 									cell: EditableCell,
 								},
 							}}
+							sticky={true}
 							rowKey="key"
 							dataSource={dataSource}
 							columns={mergedColumns}

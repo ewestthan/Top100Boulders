@@ -16,7 +16,7 @@ const EditLay = () => {
 	const [collapsed] = useState(false);
 	const [addTrigger, setAddTrigger] = useState(0);
 	const [writeTrigger, setWriteTrigger] = useState(0);
-
+	const [table, setTable] = useState("double");
 	return (
 		<Layout>
 			<Sider
@@ -96,6 +96,42 @@ const EditLay = () => {
 					}}
 				>
 					<Button
+						onClick={() => {
+							setTable("double");
+						}}
+						style={{
+							float: "left",
+							marginTop: 10,
+							marginRight: 20,
+							backgroundColor: "transparent",
+							color: "#FE1C1E",
+							border: "none",
+							boxShadow: "none",
+							fontWeight: 900,
+							fontSize: 20,
+						}}
+					>
+						<UserOutlined /> Double
+					</Button>
+					<Button
+						onClick={() => {
+							setTable("single");
+						}}
+						style={{
+							float: "left",
+							marginTop: 10,
+							marginRight: 20,
+							backgroundColor: "transparent",
+							color: "#FE1C1E",
+							border: "none",
+							boxShadow: "none",
+							fontWeight: 900,
+							fontSize: 20,
+						}}
+					>
+						<UserOutlined /> Single
+					</Button>
+					<Button
 						onClick={logout}
 						style={{
 							float: "right",
@@ -117,6 +153,7 @@ const EditLay = () => {
 					<EditMainTable
 						addTrigger={addTrigger}
 						writeTrigger={writeTrigger}
+						table={table}
 					/>
 				</Content>
 			</Layout>

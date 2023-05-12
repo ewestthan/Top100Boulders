@@ -1,6 +1,11 @@
-import { Table, Button } from "antd";
-import React, { useEffect, useState } from "react";
-import { CheckCircleFilled, CloseCircleOutlined } from "@ant-design/icons";
+import { Table, Button, Input, Space } from "antd";
+import Highlighter from "react-highlight-words";
+import React, { useEffect, useState, useRef } from "react";
+import {
+	CheckCircleFilled,
+	CloseCircleOutlined,
+	SearchOutlined,
+} from "@ant-design/icons";
 import { db } from "../firebase/initFirebase";
 import { ref, onValue } from "firebase/database";
 import "../styling/Table.css";
@@ -14,6 +19,12 @@ import line from "../assets/line.png";
 const MainTable = () => {
 	const [expandedKey, setExpandedKey] = useState(null);
 	const onExpand = (_, { key }) => setExpandedKey(key);
+	const [searchText, setSearchText] = useState("");
+	const [searchedColumn, setSearchedColumn] = useState("");
+	const searchInput = useRef(null);
+	const [dataSource, setDataSource] = useState([]);
+	const [filteredInfo, setFilteredInfo] = useState({});
+
 	const [filter, setFilter] = useState({
 		uncontrived: false,
 		obviousStart: false,
@@ -33,7 +44,135 @@ const MainTable = () => {
 		});
 	}, []);
 
-	const [dataSource, setDataSource] = useState([]);
+	const handleChange = (pagination, filters, sorter) => {
+		console.log("Various parameters", pagination, filters, sorter);
+		setFilteredInfo(filters);
+		// setSortedInfo(sorter);
+	};
+
+	const handleSearch = (selectedKeys, confirm, dataIndex) => {
+		confirm();
+		setSearchText(selectedKeys[0]);
+		setSearchedColumn(dataIndex);
+	};
+	const handleReset = (clearFilters) => {
+		clearFilters();
+		setSearchText("");
+	};
+	const getColumnSearchProps = (dataIndex) => ({
+		filterDropdown: ({
+			setSelectedKeys,
+			selectedKeys,
+			confirm,
+			clearFilters,
+			close,
+		}) => (
+			<div
+				style={{
+					padding: 8,
+				}}
+				onKeyDown={(e) => e.stopPropagation()}
+			>
+				<Input
+					ref={searchInput}
+					placeholder={`Search ${dataIndex}`}
+					value={selectedKeys[0]}
+					onChange={(e) =>
+						setSelectedKeys(e.target.value ? [e.target.value] : [])
+					}
+					onPressEnter={() =>
+						handleSearch(selectedKeys, confirm, dataIndex)
+					}
+					style={{
+						marginBottom: 8,
+						display: "block",
+					}}
+				/>
+				<Space>
+					<Button
+						type="primary"
+						onClick={() =>
+							handleSearch(selectedKeys, confirm, dataIndex)
+						}
+						icon={<SearchOutlined />}
+						size="small"
+						style={{
+							width: 90,
+						}}
+					>
+						Search
+					</Button>
+					<Button
+						onClick={() =>
+							clearFilters && handleReset(clearFilters)
+						}
+						size="small"
+						style={{
+							width: 90,
+						}}
+					>
+						Reset
+					</Button>
+					<Button
+						type="link"
+						size="small"
+						onClick={() => {
+							confirm({
+								closeDropdown: false,
+							});
+							setSearchText(selectedKeys[0]);
+							setSearchedColumn(dataIndex);
+						}}
+					>
+						Filter
+					</Button>
+					<Button
+						type="link"
+						size="small"
+						onClick={() => {
+							close();
+						}}
+					>
+						close
+					</Button>
+				</Space>
+			</div>
+		),
+		filterIcon: (filtered) => (
+			<SearchOutlined
+				style={{
+					color: filtered ? "#1890ff" : undefined,
+				}}
+			/>
+		),
+		onFilter: (value, record) => {
+			// console.log(record);
+			record[dataIndex]
+				.toString()
+				.toLowerCase()
+				.includes(value.toLowerCase());
+		},
+		filteredValue: !filteredInfo.location || null,
+		onFilterDropdownOpenChange: (visible) => {
+			if (visible) {
+				setTimeout(() => searchInput.current?.select(), 100);
+			}
+		},
+		render: (text) =>
+			searchedColumn === dataIndex ? (
+				<Highlighter
+					highlightStyle={{
+						backgroundColor: "#ffc069",
+						padding: 0,
+					}}
+					searchWords={[searchText]}
+					autoEscape
+					textToHighlight={text ? text.toString() : ""}
+				/>
+			) : (
+				text
+			),
+	});
 
 	const defaultColumns = [
 		{
@@ -105,6 +244,8 @@ const MainTable = () => {
 			key: "location",
 			// width: 150,
 			// editable: true,
+			...getColumnSearchProps("location"),
+			// filteredValue: searchText.includes()
 		},
 		{
 			title: () => (
@@ -363,13 +504,6 @@ const MainTable = () => {
 		},
 	];
 
-	const secondaryColumns = [
-		{
-			title: "Contenders",
-			dataIndex: "contenders",
-			key: "contenders",
-		},
-	];
 	const expandedRowRender = (record) => {
 		return (
 			<div
@@ -394,19 +528,22 @@ const MainTable = () => {
 					<p></p>
 				)}
 				<div>
-					<p
-						style={{
-							color: "white",
-							fontWeight: "800",
-							alignItems: "center",
-							margin: "30px",
-							marginBottom: "0",
-							textAlign: "left",
-							maxWidth: "500px",
-						}}
-					>
-						First Ascent: {record.fa}
-					</p>
+					{record.fa && (
+						<p
+							style={{
+								color: "white",
+								fontWeight: "800",
+								alignItems: "center",
+								margin: "30px",
+								marginBottom: "0",
+								textAlign: "left",
+								maxWidth: "500px",
+							}}
+						>
+							First Ascent: {record.fa}
+						</p>
+					)}
+
 					<p
 						style={{
 							color: "white",
@@ -433,9 +570,6 @@ const MainTable = () => {
 		),
 	};
 
-	let localeSeperator = {
-		emptyText: <span></span>,
-	};
 	return (
 		<div>
 			<div className="table__container">
@@ -443,11 +577,12 @@ const MainTable = () => {
 					locale={locale}
 					className="table"
 					rowKey="key"
-					dataSource={dataSource.slice(0, 99)}
+					dataSource={dataSource.slice(0, 100)}
 					columns={defaultColumns}
 					rowClassName="editable-row"
 					pagination={false}
 					sticky={true}
+					onChange={handleChange}
 					expandable={{
 						expandedRowRender,
 						expandRowByClick: true,
@@ -463,6 +598,8 @@ const MainTable = () => {
 					<div>
 						<div
 							style={{
+								borderTop: "thick solid #b4d3b2",
+								borderBottom: "thin solid white",
 								width: "100%",
 								backgroundColor: "#811b09",
 								color: "white",
@@ -477,11 +614,12 @@ const MainTable = () => {
 							locale={locale}
 							// className="table"
 							rowKey="key"
-							dataSource={dataSource.slice(100, 200)}
+							dataSource={dataSource.slice(100, 199)}
 							columns={defaultColumns}
 							rowClassName="editable-row"
 							pagination={false}
 							sticky={true}
+							onChange={handleChange}
 							expandable={{
 								expandedRowRender,
 								expandRowByClick: true,

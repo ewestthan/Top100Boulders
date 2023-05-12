@@ -22,10 +22,11 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { db, auth } from "../firebase/initFirebase";
-import { ref, onValue, update, push, child } from "firebase/database";
+import { ref, onValue, update, push, child, Database } from "firebase/database";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useNavigate } from "react-router-dom";
 import "../styling/Table.css";
+import CheckableTag from "antd/es/tag/CheckableTag";
 const { TextArea } = Input;
 
 const Row = ({ children, ...props }) => {
@@ -134,7 +135,7 @@ const EditableCell = ({
 	);
 };
 
-const MainTable = ({ addTrigger, writeTrigger }) => {
+const MainTable = ({ addTrigger, writeTrigger, table }) => {
 	const [user, loading] = useAuthState(auth);
 	const navigate = useNavigate();
 	const [deleted, setDeleted] = useState(0);
@@ -152,10 +153,12 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 		if (addTrigger) {
 			handleAdd();
 		}
+	}, [addTrigger]);
+	useEffect(() => {
 		if (writeTrigger) {
 			showModal();
 		}
-	}, [addTrigger, writeTrigger]);
+	}, [writeTrigger]);
 
 	useEffect(() => {
 		if (loading) return;
@@ -163,13 +166,15 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 	}, [user, loading]);
 
 	useEffect(() => {
-		onValue(ref(db, "dataSource"), (snapshot) => {
+		onValue(ref(db, table), (snapshot) => {
 			const data = snapshot.val();
 			if (data !== null) {
 				setDataSource(data);
+			} else {
+				setDataSource([]);
 			}
 		});
-	}, []);
+	}, [table]);
 
 	const writeToDatabase = async (values) => {
 		try {
@@ -181,14 +186,13 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 					current.getMonth() + 1
 				}-${current.getDate()}-${current.getFullYear()}`,
 			};
-			updates["/newData/"] = dataSource;
+			updates["/" + table + "/"] = dataSource;
 
 			update(ref(db), updates);
 		} catch (e) {
 			console.log(e);
 		}
 
-		console.log(values);
 		setConfirmLoading(true);
 		setTimeout(() => {
 			setOpen(false);
@@ -391,7 +395,6 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 			const row = await form.validateFields();
 			const newData = [...dataSource];
 			const index = newData.findIndex((item) => key === item.key);
-			console.log(row);
 			if (index > -1) {
 				const item = newData[index];
 				newData.splice(index, 1, {
@@ -427,6 +430,18 @@ const MainTable = ({ addTrigger, writeTrigger }) => {
 	};
 
 	const handleAdd = () => {
+		// let rank = 1;
+		// // const newData = dataSource;
+
+		// const newData = dataSource;
+
+		// for (var i = 0; i < newData.length; i++) {
+		// 	newData[i].rank = String(rank);
+		// 	// newData[i].key = newData[i].rank;
+		// 	rank++;
+		// }
+		// setDataSource(newData);
+		// console.log(newData);
 		const newData = {
 			key: dataSource.length + 1 - deleted,
 			rank: String(dataSource.length + 1),

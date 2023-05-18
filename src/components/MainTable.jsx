@@ -16,7 +16,7 @@ import size from "../assets/size.png";
 import start from "../assets/start.png";
 import line from "../assets/line.png";
 
-const MainTable = () => {
+const MainTable = ({ uid, tableName }) => {
 	const [expandedKey, setExpandedKey] = useState(null);
 	const onExpand = (_, { key }) => setExpandedKey(key);
 	const [searchText, setSearchText] = useState("");
@@ -36,13 +36,19 @@ const MainTable = () => {
 	});
 
 	useEffect(() => {
-		onValue(ref(db, "dataSource"), (snapshot) => {
-			const data = snapshot.val();
-			if (data !== null) {
-				setDataSource(data);
+		console.log(uid, tableName);
+		onValue(
+			ref(db, "/users/" + uid + "/tables/" + tableName + "/"),
+			(snapshot) => {
+				const data = snapshot.val();
+				if (data !== null) {
+					setDataSource(data);
+				} else {
+					setDataSource([]);
+				}
 			}
-		});
-	}, []);
+		);
+	}, [tableName]);
 
 	const handleChange = (pagination, filters, sorter) => {
 		console.log("Various parameters", pagination, filters, sorter);
@@ -574,6 +580,15 @@ const MainTable = () => {
 		<div>
 			<div className="table__container">
 				<Table
+					title={() => (
+						<div
+							style={{
+								color: "white",
+							}}
+						>
+							{tableName}
+						</div>
+					)}
 					locale={locale}
 					className="table"
 					rowKey="key"
@@ -612,7 +627,6 @@ const MainTable = () => {
 						</div>
 						<Table
 							locale={locale}
-							// className="table"
 							rowKey="key"
 							dataSource={dataSource.slice(100, 199)}
 							columns={defaultColumns}
@@ -626,7 +640,9 @@ const MainTable = () => {
 								onExpand: onExpand,
 								expandedRowKeys: [expandedKey],
 								rowExpandable: (record) =>
-									record.description || record.link === "",
+									record.description ||
+									record.link ||
+									record.fa,
 							}}
 							expandIconAsCell={false}
 							expandIconColumnIndex={-1}

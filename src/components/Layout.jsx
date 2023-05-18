@@ -14,11 +14,28 @@ import React, { useEffect, useState } from "react";
 import MainTable from "./MainTable";
 import About from "./About";
 import ChangeLog from "./ChangeLog";
+import { db } from "../firebase/initFirebase";
+
+import { ref, onValue } from "firebase/database";
 
 const { Header, Sider, Content } = Layout;
 const Lay = () => {
 	const [content, setContent] = useState("home");
+	const [userData, setUserData] = useState([]);
+	const [tableName, setTableName] = useState("Doubles");
+
 	useEffect(() => {}, [setContent]);
+
+	useEffect(() => {
+		onValue(ref(db, "/users/BIM6Jt3LVwd3tn6DNYWjgGcF5hc2"), (snapshot) => {
+			const data = snapshot.val();
+			console.log(data);
+			if (data !== null) {
+				setUserData(data);
+				setTableName(Object.keys(data.tables)[0]);
+			}
+		});
+	}, []);
 
 	function renderSwitch(param) {
 		switch (param) {
@@ -27,7 +44,12 @@ const Lay = () => {
 			case "changeLog":
 				return <ChangeLog />;
 			default:
-				return <MainTable />;
+				return (
+					<MainTable
+						tableName={tableName}
+						uid={userData ? "BIM6Jt3LVwd3tn6DNYWjgGcF5hc2" : ""}
+					/>
+				);
 		}
 	}
 	return (
@@ -92,7 +114,10 @@ const Lay = () => {
 							fontWeight: 900,
 							fontSize: 20,
 						}}
-						onClick={() => setContent("about")}
+						onClick={() => {
+							console.log(tableName);
+							setContent("about");
+						}}
 					>
 						<QuestionCircleOutlined /> About
 					</Button>
@@ -127,6 +152,32 @@ const Lay = () => {
 						zIndex: 4,
 					}}
 				>
+					{
+						userData.tables &&
+							Object.keys(userData.tables).map((key) => {
+								return (
+									<Button
+										onClick={() => {
+											setTableName(key);
+										}}
+										style={{
+											float: "left",
+											marginTop: 10,
+											marginRight: 20,
+											backgroundColor: "transparent",
+											color: "#FE1C1E",
+											border: "none",
+											boxShadow: "none",
+											fontWeight: 900,
+											fontSize: 20,
+										}}
+									>
+										{key}
+									</Button>
+								);
+							})
+						//
+					}
 					<Button
 						style={{
 							float: "right",

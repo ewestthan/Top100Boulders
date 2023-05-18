@@ -22,11 +22,12 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { db, auth } from "../firebase/initFirebase";
-import { ref, onValue, update, push, child, Database } from "firebase/database";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { ref, onValue, update, push, child, remove } from "firebase/database";
 import { useNavigate } from "react-router-dom";
 import "../styling/Table.css";
 import CheckableTag from "antd/es/tag/CheckableTag";
+// import { writeJsonFile } from "write-json-file";
+
 const { TextArea } = Input;
 
 const Row = ({ children, ...props }) => {
@@ -135,14 +136,20 @@ const EditableCell = ({
 	);
 };
 
-const MainTable = ({ addTrigger, writeTrigger, table }) => {
-	const [user, loading] = useAuthState(auth);
-	const navigate = useNavigate();
+const MainTable = ({
+	addTrigger,
+	writeTrigger,
+	tableName,
+	uid,
+	deleteTrigger,
+}) => {
 	const [deleted, setDeleted] = useState(0);
+	const [reloadTrigger, setReloadTrigger] = useState(0);
 	const [expandedKey, setExpandedKey] = useState(null);
 	const onExpand = (_, { key }) => setExpandedKey(key);
 	const [dataSource, setDataSource] = useState([]);
-	const [form] = Form.useForm();
+	const [formRow] = Form.useForm();
+	const [formModal] = Form.useForm();
 	const [editingKey, setEditingKey] = useState("");
 	const isEditing = (record) => record.key === editingKey;
 	const [open, setOpen] = useState(false);
@@ -154,41 +161,64 @@ const MainTable = ({ addTrigger, writeTrigger, table }) => {
 			handleAdd();
 		}
 	}, [addTrigger]);
+
 	useEffect(() => {
 		if (writeTrigger) {
 			showModal();
+			writeTrigger = false;
 		}
 	}, [writeTrigger]);
 
 	useEffect(() => {
-		if (loading) return;
-		if (!user) return navigate("/");
-	}, [user, loading]);
+		if (deleteTrigger) {
+			try {
+				remove(ref(db, "/users/" + uid + "/tables/" + tableName + "/"));
+			} catch (e) {
+				console.log(e);
+			}
+		}
+	}, [deleteTrigger]);
 
 	useEffect(() => {
-		onValue(ref(db, table), (snapshot) => {
-			const data = snapshot.val();
-			if (data !== null) {
-				setDataSource(data);
-			} else {
-				setDataSource([]);
+		if (tableName !== "") {
+			try {
+				console.log(tableName);
+				onValue(
+					ref(db, "/users/" + uid + "/tables/" + tableName + "/"),
+					(snapshot) => {
+						const data = snapshot.val();
+						if (data !== null) {
+							setDataSource(data);
+						} else {
+							setDataSource([]);
+						}
+					}
+				);
+			} catch (e) {
+				console.log(e);
 			}
-		});
-	}, [table]);
+		} else {
+			setDataSource([]);
+		}
+	}, [, reloadTrigger, tableName]);
 
 	const writeToDatabase = async (values) => {
 		try {
+			// await writeJsonFile("test.json", JSON.stringify(dataSource));
+
 			const newRef = push(child(ref(db), "changeLog")).key;
 			const updates = {};
 			updates["/changeLog/" + newRef] = {
-				description: values.change,
+				change: values.change,
 				date: `${
 					current.getMonth() + 1
 				}-${current.getDate()}-${current.getFullYear()}`,
 			};
-			updates["/" + table + "/"] = dataSource;
-
+			updates["/users/" + uid + "/tables/" + tableName + "/"] =
+				dataSource;
+			console.log(updates);
 			update(ref(db), updates);
+			setReloadTrigger((reloadTrigger) => reloadTrigger + 1);
 		} catch (e) {
 			console.log(e);
 		}
@@ -366,7 +396,7 @@ const MainTable = ({ addTrigger, writeTrigger, table }) => {
 	];
 
 	const handleEdit = (record) => {
-		form.setFieldsValue({
+		formRow.setFieldsValue({
 			rank: "",
 			grade: "V",
 			name: "",
@@ -392,7 +422,7 @@ const MainTable = ({ addTrigger, writeTrigger, table }) => {
 
 	const handleSave = async (key) => {
 		try {
-			const row = await form.validateFields();
+			const row = await formRow.validateFields();
 			const newData = [...dataSource];
 			const index = newData.findIndex((item) => key === item.key);
 			if (index > -1) {
@@ -529,6 +559,7 @@ const MainTable = ({ addTrigger, writeTrigger, table }) => {
 					display: "flex",
 					justifyContent: "center",
 					alignItems: "center",
+					zindex: -1,
 				}}
 			>
 				<div
@@ -619,19 +650,21 @@ const MainTable = ({ addTrigger, writeTrigger, table }) => {
 					<p></p>
 				)}
 				<div>
-					<p
-						style={{
-							color: "white",
-							fontWeight: "800",
-							alignItems: "center",
-							margin: "30px",
-							marginBottom: "0",
-							textAlign: "left",
-							maxWidth: "500px",
-						}}
-					>
-						First Ascent: {record.fa}
-					</p>
+					{record.fa && (
+						<p
+							style={{
+								color: "white",
+								fontWeight: "800",
+								alignItems: "center",
+								margin: "30px",
+								marginBottom: "0",
+								textAlign: "left",
+								maxWidth: "500px",
+							}}
+						>
+							First Ascent: {record.fa}
+						</p>
+					)}
 					<p
 						style={{
 							color: "white",
@@ -675,9 +708,10 @@ const MainTable = ({ addTrigger, writeTrigger, table }) => {
 				title="Save Table"
 				open={open}
 				onOk={() => {
-					form.validateFields()
+					formModal
+						.validateFields()
 						.then((values) => {
-							form.resetFields();
+							formModal.resetFields();
 							writeToDatabase(values);
 						})
 						.catch((info) => {
@@ -688,21 +722,29 @@ const MainTable = ({ addTrigger, writeTrigger, table }) => {
 				onCancel={closeModal}
 				centered
 			>
-				<Form form={form} name="form_in_modal">
+				<Form form={formModal} name="form_in_modal">
 					<Form.Item name="change">
 						<TextArea rows={4} style={{ width: "350px" }} />
 					</Form.Item>
 				</Form>
 			</Modal>
+
 			<DndContext onDragEnd={onDragEnd}>
 				<SortableContext
-					// rowKey array
 					items={dataSource.map((i) => i.key)}
 					strategy={verticalListSortingStrategy}
 				>
-					<Form form={form} component={false}>
-						{/* <div className='table__container'> */}
+					<Form form={formRow} component={false}>
 						<Table
+							title={() => (
+								<div
+									style={{
+										color: "white",
+									}}
+								>
+									{tableName}
+								</div>
+							)}
 							locale={locale}
 							components={{
 								body: {
@@ -721,7 +763,9 @@ const MainTable = ({ addTrigger, writeTrigger, table }) => {
 								expandRowByClick: true,
 								onExpand: onExpand,
 								expandedRowKeys: [expandedKey],
+								zindex: 1,
 							}}
+							// style={{ zindex: 1 }}
 							expandIconAsCell={false}
 							expandIconColumnIndex={-1}
 						/>

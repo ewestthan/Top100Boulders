@@ -6,7 +6,6 @@ import ReactLoading from "react-loading";
 import {
 	auth,
 	logInWithEmailAndPassword,
-	signInWithGoogle,
 	registerWithEmailAndPassword,
 } from "../firebase/initFirebase.jsx";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -18,7 +17,6 @@ function Login() {
 	const [user, loading, error] = useAuthState(auth);
 	const navigate = useNavigate();
 	const [showError, setShowError] = useState(false);
-	const isMounted = useRef(false);
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 
 	useEffect(() => {
@@ -30,10 +28,13 @@ function Login() {
 		}
 	}, [user, loading]);
 
-	// const register = () => {
-	// 	registerWithEmailAndPassword(email, password);
-	// 	if (user) navigate("/edit", { replace: true });
-	// };
+	const handleRegister = () => {
+		console.log("Test");
+		registerWithEmailAndPassword(email, password).then((promise) =>
+			promise ? setIsLoggingIn(true) : setShowError(true)
+		);
+		if (user) navigate("/edit", { replace: true });
+	};
 
 	const handleLogin = () => {
 		logInWithEmailAndPassword(email, password).then((promise) =>
@@ -83,13 +84,13 @@ function Login() {
 						Username or password incorrect
 					</p>
 				)}
-				{/* <button
+				<button
 					className="login__btn"
-					onClick={() => register(email, password)}
-					disabled
+					onClick={handleRegister}
+					// disabled
 				>
 					Register
-				</button> */}
+				</button>
 			</div>
 		</div>
 	);

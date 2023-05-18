@@ -6,6 +6,65 @@
 	--darkGray: #3a3b3c;
 }
 
+.ant-table-container
+	.ant-table-wrapper
+	> tr.ant-expanded-row
+	.ant-table-expanded-row-level-1 {
+	z-index: 1;
+}
+.ant-modal .ant-modal-title {
+	color: white;
+}
+.ant-modal .ant-modal-header {
+	background-color: var(--lightGray);
+}
+.ant-table-wrapper .ant-table {
+	background-color: var(--darkRed);
+}
+.ant-input:focus {
+	border-color: var(--darkRed);
+}
+.ant-input:hover {
+	border-color: var(--darkRed);
+}
+.ant-input:focus-visible {
+	border-color: var(--darkRed);
+}
+.ant-modal .ant-modal-content {
+	background-color: var(--lightGray);
+	width: 400px;
+}
+.ant-btn-primary {
+	background-color: var(--darkRed);
+}
+.ant-btn-primary:not(:disabled):hover {
+	background-color: var(--red);
+}
+.ant-popconfirm .ant-popconfirm-message-title {
+	color: white;
+}
+.ant-btn-default:not(:disabled) {
+	background-color: var(--lightGray);
+	border-color: white;
+	color: white;
+}
+.ant-btn-default:not(:disabled):hover {
+	color: var(--red);
+	border-color: var(--red);
+}
+.ant-popover .ant-popover-inner {
+	background-color: var(--lightGray);
+	color: white;
+}
+div.ant-table-title {
+	background-color: #811b09;
+	display: flex;
+	justify-content: center;
+	color: white;
+	font-weight: 900;
+	font-size: 30px;
+	border-radius: 10px;
+}
 .ant-table-wrapper .ant-table-thead > tr > td {
 	background-color: var(--darkRed);
 }
@@ -56,6 +115,10 @@ td.ant-table-cell {
 	background-color: #55575a;
 }
 
+.ant-table-wrapper .ant-table-tbody > tr.ant-table-expandable-row {
+	z-index: 1;
+}
+
 .ant-table
 	.ant-table-container
 	.ant-table-content
@@ -92,7 +155,10 @@ a.ant-typography {
 a {
 	color: var(--red);
 }
-
+.ant-table-wrapper .ant-table .ant-table-header {
+	background-color: var(--darkRed);
+	border-radius: 0;
+}
 a.ant-typography:hover {
 	color: #60a65b;
 }

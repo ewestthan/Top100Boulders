@@ -9,7 +9,14 @@ import {
 	signOut,
 } from "firebase/auth";
 import { query, getDocs, collection, where, addDoc } from "firebase/firestore";
-import { getDatabase } from "firebase/database";
+import {
+	getDatabase,
+	ref,
+	onValue,
+	update,
+	push,
+	child,
+} from "firebase/database";
 
 const firebaseConfig = {
 	databaseURL: "https://top100-b6c39-default-rtdb.firebaseio.com",
@@ -53,15 +60,25 @@ const signInWithGoogle = async () => {
 const logInWithEmailAndPassword = async (email, password) => {
 	try {
 		await signInWithEmailAndPassword(auth, email, password);
+
 		return true;
 	} catch (err) {
 		return false;
 	}
 };
 
-const registerWithEmailAndPassword = async (name, email, password) => {
+const registerWithEmailAndPassword = async (email, password) => {
 	try {
-		await createUserWithEmailAndPassword(auth, email, password);
+		const user = await createUserWithEmailAndPassword(
+			auth,
+			email,
+			password
+		);
+		const updates = {};
+		updates["/users/" + user.user.uid] = {
+			email: user.user.email,
+		};
+		update(ref(db), updates);
 	} catch (err) {
 		console.error(err);
 		alert(err.message);

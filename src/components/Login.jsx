@@ -1,32 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { ReactComponent as ReactLogo } from "../logo.svg";
-import ReactLoading from "react-loading";
-
-import {
-	auth,
-	logInWithEmailAndPassword,
-	registerWithEmailAndPassword,
-} from "../firebase/initFirebase.jsx";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { auth, registerWithEmailAndPassword } from "../firebase/initFirebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import "../styling/Login.css";
+import ReactLoading from "react-loading";
+import { ReactComponent as ReactLogo } from "../logo.svg";
 
 function Login() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const [user, loading, error] = useAuthState(auth);
+	const [user, loading] = useAuthState(auth);
 	const navigate = useNavigate();
-	const [showError, setShowError] = useState(false);
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
-
-	useEffect(() => {
-		if (loading) {
-			return;
-		}
-		if (user) {
-			navigate("/edit");
-		}
-	}, [user, loading]);
+	const [showError, setShowError] = useState(false);
 
 	const handleRegister = () => {
 		console.log("Test");
@@ -36,11 +21,10 @@ function Login() {
 		if (user) navigate("/edit", { replace: true });
 	};
 
-	const handleLogin = () => {
-		logInWithEmailAndPassword(email, password).then((promise) =>
-			promise ? setIsLoggingIn(true) : setShowError(true)
-		);
-	};
+	useEffect(() => {
+		if (loading) return;
+		if (user) navigate("/dashboard", { replace: true });
+	}, [user, loading]);
 
 	return isLoggingIn ? (
 		<ReactLoading
@@ -76,7 +60,11 @@ function Login() {
 					onChange={(e) => setPassword(e.target.value)}
 					placeholder="Password"
 				/>
-				<button className="login__btn" onClick={handleLogin}>
+				<button
+					className="login__btn"
+					onClick={handleRegister}
+					// disabled
+				>
 					Login
 				</button>
 				{showError && (
@@ -84,13 +72,12 @@ function Login() {
 						Username or password incorrect
 					</p>
 				)}
-				<button
-					className="login__btn"
-					onClick={handleRegister}
-					// disabled
-				>
-					Register
-				</button>
+				<div style={{ color: "white" }}>
+					<p>Don't have an account?</p>
+					<Link to="/register" className="link">
+						Signup
+					</Link>
+				</div>
 			</div>
 		</div>
 	);

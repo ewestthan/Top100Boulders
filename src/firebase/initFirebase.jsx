@@ -67,7 +67,7 @@ const logInWithEmailAndPassword = async (email, password) => {
 	}
 };
 
-const registerWithEmailAndPassword = async (email, password) => {
+const registerWithEmailAndPassword = async (email, password, name) => {
 	try {
 		const user = await createUserWithEmailAndPassword(
 			auth,
@@ -77,11 +77,11 @@ const registerWithEmailAndPassword = async (email, password) => {
 		const updates = {};
 		updates["/users/" + user.user.uid] = {
 			email: user.user.email,
+			name: name,
 		};
 		update(ref(db), updates);
 	} catch (err) {
-		console.error(err);
-		alert(err.message);
+		return err.code;
 	}
 };
 

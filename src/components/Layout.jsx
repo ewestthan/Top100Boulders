@@ -8,8 +8,9 @@ import {
 	QuestionCircleOutlined,
 	UserOutlined,
 	FileSyncOutlined,
+	SearchOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Dropdown, Input, Form } from "antd";
 import React, { useEffect, useState } from "react";
 import MainTable from "./MainTable";
 import About from "./About";
@@ -17,12 +18,14 @@ import ChangeLog from "./ChangeLog";
 import { db } from "../firebase/initFirebase";
 
 import { ref, onValue } from "firebase/database";
+import Search from "antd/es/transfer/search";
 
 const { Header, Sider, Content } = Layout;
 const Lay = () => {
 	const [content, setContent] = useState("home");
 	const [userData, setUserData] = useState([]);
 	const [tableName, setTableName] = useState("Doubles");
+	const [form] = Form.useForm();
 
 	useEffect(() => {}, [setContent]);
 
@@ -103,6 +106,42 @@ const Lay = () => {
 					>
 						<HomeOutlined twoToneColor="#eb2f96" /> Home
 					</Button>
+					{/* <Dropdown
+						dropdownRender={() => (
+							<div
+								style={{
+									backgroundColor: "#242526",
+									display: "flex",
+									marginTop: 10,
+									// width: 100,
+									// height: 500,
+									borderColor: "#FE1C1E",
+									flexDirection: "column",
+								}}
+							>
+								<Form form={form} name="form_in_modal">
+									<Form.Item name="change">
+										<Input style={{ width: "350px" }} />
+									</Form.Item>
+								</Form>
+							</div>
+						)}
+					>
+						<Button
+							style={{
+								marginBottom: 16,
+								marginLeft: 15,
+								backgroundColor: "transparent",
+								color: "#FE1C1E",
+								border: "none",
+								boxShadow: "none",
+								fontWeight: 900,
+								fontSize: 20,
+							}}
+						>
+							<SearchOutlined /> Search
+						</Button>
+					</Dropdown> */}
 					<Button
 						style={{
 							marginBottom: 16,

@@ -54,7 +54,7 @@ const Row = ({ children, ...props }) => {
 		...(isDragging
 			? {
 					position: "relative",
-					zIndex: 9999,
+					zIndex: 2,
 			  }
 			: {}),
 	};
@@ -205,15 +205,17 @@ const MainTable = ({
 	const writeToDatabase = async (values) => {
 		try {
 			// await writeJsonFile("test.json", JSON.stringify(dataSource));
-
+			console.log(values);
 			const newRef = push(child(ref(db), "changeLog")).key;
 			const updates = {};
-			updates["/changeLog/" + newRef] = {
-				change: values.change,
-				date: `${
-					current.getMonth() + 1
-				}-${current.getDate()}-${current.getFullYear()}`,
-			};
+			if (values.change) {
+				updates["/changeLog/" + newRef] = {
+					change: values.change,
+					date: `${
+						current.getMonth() + 1
+					}-${current.getDate()}-${current.getFullYear()}`,
+				};
+			}
 			updates["/users/" + uid + "/tables/" + tableName + "/"] =
 				dataSource;
 			console.log(updates);
@@ -559,7 +561,6 @@ const MainTable = ({
 					display: "flex",
 					justifyContent: "center",
 					alignItems: "center",
-					zindex: -1,
 				}}
 			>
 				<div
@@ -717,14 +718,33 @@ const MainTable = ({
 						.catch((info) => {
 							console.log("Validate Failed:", info);
 						});
+					// formModal.validateFields()
+					// 	? formModal
+					// 			.validateFields()
+					// 			.then((values) => {
+					// 				formModal.resetFields();
+					// 				writeToDatabase(values);
+					// 			})
+					// 			.catch((info) => {
+					// 				console.log("Validate Failed:", info);
+					// 			})
+					// 	: console.log("Did not validate");
 				}}
 				confirmLoading={confirmLoading}
 				onCancel={closeModal}
 				centered
 			>
-				<Form form={formModal} name="form_in_modal">
+				<Form
+					form={formModal}
+					name="form_in_modal"
+					initalValues={"What did you change?"}
+				>
 					<Form.Item name="change">
-						<TextArea rows={4} style={{ width: "350px" }} />
+						<TextArea
+							rows={4}
+							style={{ width: "350px" }}
+							placeholder="What did you change? (Optional)"
+						/>
 					</Form.Item>
 				</Form>
 			</Modal>
@@ -763,9 +783,7 @@ const MainTable = ({
 								expandRowByClick: true,
 								onExpand: onExpand,
 								expandedRowKeys: [expandedKey],
-								zindex: 1,
 							}}
-							// style={{ zindex: 1 }}
 							expandIconAsCell={false}
 							expandIconColumnIndex={-1}
 						/>

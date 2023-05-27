@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth, registerWithEmailAndPassword } from "../firebase/initFirebase";
+import { auth, logInWithEmailAndPassword } from "../firebase/initFirebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ReactLoading from "react-loading";
 import { ReactComponent as ReactLogo } from "../logo.svg";
@@ -14,8 +14,7 @@ function Login() {
 	const [showError, setShowError] = useState(false);
 
 	const handleRegister = () => {
-		console.log("Test");
-		registerWithEmailAndPassword(email, password).then((promise) =>
+		logInWithEmailAndPassword(email, password).then((promise) =>
 			promise ? setIsLoggingIn(true) : setShowError(true)
 		);
 		if (user) navigate("/edit", { replace: true });
@@ -23,7 +22,7 @@ function Login() {
 
 	useEffect(() => {
 		if (loading) return;
-		if (user) navigate("/dashboard", { replace: true });
+		if (user) navigate("/edit", { replace: true });
 	}, [user, loading]);
 
 	return isLoggingIn ? (

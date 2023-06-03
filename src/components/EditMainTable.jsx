@@ -144,7 +144,7 @@ const MainTable = ({
 	const [deleted, setDeleted] = useState(0);
 	const [reloadTrigger, setReloadTrigger] = useState(0);
 	const [expandedKey, setExpandedKey] = useState(null);
-	const onExpand = (_, { key }) => setExpandedKey(key);
+
 	const [dataSource, setDataSource] = useState([]);
 	const [formRow] = Form.useForm();
 	const [formModal] = Form.useForm();
@@ -574,6 +574,14 @@ const MainTable = ({
 		};
 	});
 
+	const onExpand = (_, { key }) => {
+		if (expandedKey == key) {
+			setExpandedKey(null);
+		} else {
+			setExpandedKey(key);
+		}
+	};
+
 	const expandedRowRender = (record) => {
 		return editingKey == record.key ? (
 			<div
@@ -738,17 +746,6 @@ const MainTable = ({
 						.catch((info) => {
 							console.log("Validate Failed:", info);
 						});
-					// formModal.validateFields()
-					// 	? formModal
-					// 			.validateFields()
-					// 			.then((values) => {
-					// 				formModal.resetFields();
-					// 				writeToDatabase(values);
-					// 			})
-					// 			.catch((info) => {
-					// 				console.log("Validate Failed:", info);
-					// 			})
-					// 	: console.log("Did not validate");
 				}}
 				confirmLoading={confirmLoading}
 				onCancel={closeModal}

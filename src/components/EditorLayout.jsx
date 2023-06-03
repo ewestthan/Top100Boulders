@@ -39,6 +39,7 @@ const EditLay = () => {
 	const [addTrigger, setAddTrigger] = useState(0);
 	const [deleteTrigger, setDeleteTrigger] = useState(false);
 	const [writeTrigger, setWriteTrigger] = useState(false);
+	const [saveTrigger, setSaveTrigger] = useState(false);
 	const [tableName, setTableName] = useState("");
 	const [form] = Form.useForm();
 	const [open, setOpen] = useState(false);
@@ -46,7 +47,8 @@ const EditLay = () => {
 	useEffect(() => {
 		setWriteTrigger(false);
 		setDeleteTrigger(false);
-	}, [writeTrigger, deleteTrigger]);
+		setSaveTrigger(false);
+	}, [writeTrigger, deleteTrigger, saveTrigger]);
 
 	useEffect(() => {
 		if (loading) return;
@@ -86,6 +88,7 @@ const EditLay = () => {
 						writeTrigger={writeTrigger}
 						tableName={tableName}
 						deleteTrigger={deleteTrigger}
+						saveTrigger={saveTrigger}
 						uid={user ? user.uid : ""}
 					/>
 				);
@@ -262,6 +265,10 @@ const EditLay = () => {
 													<Button
 														onClick={() => {
 															setTableName(key);
+															setSaveTrigger(
+																(saveTrigger) =>
+																	!saveTrigger
+															);
 														}}
 														style={{
 															margin: 15,
@@ -300,7 +307,10 @@ const EditLay = () => {
 						</Dropdown>
 					)}
 					<Button
-						onClick={showModal}
+						onClick={() => {
+							showModal();
+							setSaveTrigger((saveTrigger) => !saveTrigger);
+						}}
 						style={{
 							float: "left",
 							marginTop: 10,
@@ -317,7 +327,10 @@ const EditLay = () => {
 					</Button>
 
 					<Button
-						onClick={logout}
+						onClick={() => {
+							setSaveTrigger((saveTrigger) => !saveTrigger);
+							logout();
+						}}
 						style={{
 							float: "right",
 							marginTop: 10,
@@ -334,6 +347,8 @@ const EditLay = () => {
 					</Button>
 					<Button
 						onClick={() => {
+							setSaveTrigger((saveTrigger) => !saveTrigger);
+
 							setTableName("");
 						}}
 						style={{

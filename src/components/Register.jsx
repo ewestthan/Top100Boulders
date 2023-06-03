@@ -5,7 +5,6 @@ import ReactLoading from "react-loading";
 
 import {
 	auth,
-	logInWithEmailAndPassword,
 	registerWithEmailAndPassword,
 } from "../firebase/initFirebase.jsx";
 import { useAuthState } from "react-firebase-hooks/auth";

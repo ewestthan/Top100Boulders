@@ -18,10 +18,10 @@ const HowTo = () => {
 					</li>
 					<li>
 						Rows can be edited or deleted via the far right column,
-						and will not save unless certain values are input.
+						but will not save unless certain values are input.
 					</li>
 					<li>
-						Rows are draggable using the icon on the far left
+						Rows are draggable using the icon in the far left
 						column, simply click and drag to reorder the rows.
 					</li>
 					<li>

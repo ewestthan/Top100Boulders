@@ -191,32 +191,29 @@ const Lay = () => {
 						zIndex: 4,
 					}}
 				>
-					{
-						userData.tables &&
-							Object.keys(userData.tables).map((key) => {
-								return (
-									<Button
-										onClick={() => {
-											setTableName(key);
-										}}
-										style={{
-											float: "left",
-											marginTop: 10,
-											marginRight: 20,
-											backgroundColor: "transparent",
-											color: "#FE1C1E",
-											border: "none",
-											boxShadow: "none",
-											fontWeight: 900,
-											fontSize: 20,
-										}}
-									>
-										{key}
-									</Button>
-								);
-							})
-						//
-					}
+					{userData.tables &&
+						Object.keys(userData.tables).map((key) => {
+							return (
+								<Button
+									onClick={() => {
+										setTableName(key);
+									}}
+									style={{
+										float: "left",
+										marginTop: 10,
+										marginRight: 20,
+										backgroundColor: "transparent",
+										color: "#FE1C1E",
+										border: "none",
+										boxShadow: "none",
+										fontWeight: 900,
+										fontSize: 20,
+									}}
+								>
+									{key}
+								</Button>
+							);
+						})}
 					<Button
 						style={{
 							float: "right",

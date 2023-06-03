@@ -7,7 +7,7 @@ import {
 	Typography,
 	Modal,
 } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
 	MenuOutlined,
 	CheckCircleFilled,
@@ -21,12 +21,9 @@ import {
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { db, auth } from "../firebase/initFirebase";
+import { db } from "../firebase/initFirebase";
 import { ref, onValue, update, push, child, remove } from "firebase/database";
-import { useNavigate } from "react-router-dom";
 import "../styling/Table.css";
-import CheckableTag from "antd/es/tag/CheckableTag";
-// import { writeJsonFile } from "write-json-file";
 
 const { TextArea } = Input;
 
@@ -142,6 +139,7 @@ const MainTable = ({
 	tableName,
 	uid,
 	deleteTrigger,
+	saveTrigger,
 }) => {
 	const [deleted, setDeleted] = useState(0);
 	const [reloadTrigger, setReloadTrigger] = useState(0);
@@ -155,12 +153,26 @@ const MainTable = ({
 	const [open, setOpen] = useState(false);
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const current = new Date();
+	const hasEdited = useRef(false);
+	const [fixingRows, setFixingRows] = useState(false);
 
 	useEffect(() => {
 		if (addTrigger) {
 			handleAdd();
 		}
 	}, [addTrigger]);
+
+	useEffect(() => {
+		if (fixingRows) {
+			fixRanks();
+		}
+	}, [fixingRows]);
+
+	// useEffect(() => {
+	// 	if (hasEdited.current && saveTrigger) {
+	// 		showModal();
+	// 	}
+	// }, [saveTrigger]);
 
 	useEffect(() => {
 		if (writeTrigger) {
@@ -182,7 +194,6 @@ const MainTable = ({
 	useEffect(() => {
 		if (tableName !== "") {
 			try {
-				console.log(tableName);
 				onValue(
 					ref(db, "/users/" + uid + "/tables/" + tableName + "/"),
 					(snapshot) => {
@@ -205,7 +216,6 @@ const MainTable = ({
 	const writeToDatabase = async (values) => {
 		try {
 			// await writeJsonFile("test.json", JSON.stringify(dataSource));
-			console.log(values);
 			const newRef = push(child(ref(db), "changeLog")).key;
 			const updates = {};
 			if (values.change) {
@@ -218,9 +228,9 @@ const MainTable = ({
 			}
 			updates["/users/" + uid + "/tables/" + tableName + "/"] =
 				dataSource;
-			console.log(updates);
 			update(ref(db), updates);
 			setReloadTrigger((reloadTrigger) => reloadTrigger + 1);
+			hasEdited.current = false;
 		} catch (e) {
 			console.log(e);
 		}
@@ -230,6 +240,18 @@ const MainTable = ({
 			setOpen(false);
 			setConfirmLoading(false);
 		}, 2000);
+	};
+
+	const fixRanks = () => {
+		let rank = 1;
+		const newData = dataSource;
+		for (var i = 0; i < newData.length; i++) {
+			newData[i].rank = String(rank);
+			newData[i].key = parseInt(newData[i].rank);
+			rank++;
+		}
+		setFixingRows(false);
+		return newData;
 	};
 
 	const defaultColumns = [
@@ -416,6 +438,7 @@ const MainTable = ({
 			...record,
 		});
 		setEditingKey(record.key);
+		hasEdited.current = true;
 	};
 
 	const handleCancel = () => {
@@ -440,6 +463,7 @@ const MainTable = ({
 				setDataSource(newData);
 				setEditingKey("");
 			}
+			hasEdited.current = true;
 		} catch (errInfo) {
 			console.log("Validate Failed:", errInfo);
 		}
@@ -459,23 +483,16 @@ const MainTable = ({
 		}
 		setDeleted(deleted - 1);
 		setDataSource(newData);
+		hasEdited.current = true;
+		setFixingRows(true);
 	};
 
 	const handleAdd = () => {
-		// let rank = 1;
-		// // const newData = dataSource;
-
-		// const newData = dataSource;
-
-		// for (var i = 0; i < newData.length; i++) {
-		// 	newData[i].rank = String(rank);
-		// 	// newData[i].key = newData[i].rank;
-		// 	rank++;
-		// }
-		// setDataSource(newData);
-		// console.log(newData);
-		const newData = {
-			key: dataSource.length + 1 - deleted,
+		const highestRank = dataSource.reduce((prev, current) =>
+			prev.key > current.key ? prev : current
+		);
+		const newRow = {
+			key: highestRank.key + 1,
 			rank: String(dataSource.length + 1),
 			grade: "X",
 			name: "X",
@@ -491,7 +508,9 @@ const MainTable = ({
 			description: "",
 			fa: "",
 		};
-		setDataSource([...dataSource, newData]);
+		setDataSource([...dataSource, newRow]);
+		hasEdited.current = true;
+		setFixingRows(true);
 	};
 
 	const onDragEnd = ({ active, over }) => {
@@ -534,7 +553,8 @@ const MainTable = ({
 
 				return arrayMove(previous, activeIndex, overIndex);
 			});
-			console.log("moved", dataSource);
+			hasEdited.current = true;
+			setFixingRows(true);
 		}
 	};
 

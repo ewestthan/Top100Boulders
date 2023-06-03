@@ -5,12 +5,15 @@
 	--lightGray: #55575a;
 	--darkGray: #3a3b3c;
 }
-
-.ant-table-container
-	.ant-table-wrapper
-	> tr.ant-expanded-row
-	.ant-table-expanded-row-level-1 {
-	z-index: 1;
+.ant-upload-wrapper
+	.ant-upload-list
+	.ant-upload-list-item
+	.ant-upload-list-item-name {
+	display: none;
+}
+.ant-upload-wrapper .ant-upload-list .ant-upload-list-item-container {
+	height: 0;
+	transition: none;
 }
 .ant-modal .ant-modal-title {
 	color: white;

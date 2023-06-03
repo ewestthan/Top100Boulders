@@ -18,7 +18,6 @@ import line from "../assets/line.png";
 
 const MainTable = ({ uid, tableName }) => {
 	const [expandedKey, setExpandedKey] = useState(null);
-	const onExpand = (_, { key }) => setExpandedKey(key);
 	const [searchText, setSearchText] = useState("");
 	const [searchedColumn, setSearchedColumn] = useState("");
 	const searchInput = useRef(null);
@@ -510,6 +509,9 @@ const MainTable = ({ uid, tableName }) => {
 		},
 	];
 
+	const onExpand = (_, { key }) => {
+		expandedKey == key ? setExpandedKey(null) : setExpandedKey(key);
+	};
 	const expandedRowRender = (record) => {
 		return (
 			<div

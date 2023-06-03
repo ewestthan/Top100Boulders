@@ -6,12 +6,16 @@ import {
 	Checkbox,
 	Typography,
 	Modal,
+	Button,
+	Upload,
 } from "antd";
 import React, { useEffect, useState, useRef } from "react";
 import {
 	MenuOutlined,
 	CheckCircleFilled,
 	CloseCircleOutlined,
+	MinusCircleOutlined,
+	UploadOutlined,
 } from "@ant-design/icons";
 import { DndContext } from "@dnd-kit/core";
 import {
@@ -575,11 +579,7 @@ const MainTable = ({
 	});
 
 	const onExpand = (_, { key }) => {
-		if (expandedKey == key) {
-			setExpandedKey(null);
-		} else {
-			setExpandedKey(key);
-		}
+		expandedKey == key ? setExpandedKey(null) : setExpandedKey(key);
 	};
 
 	const expandedRowRender = (record) => {
@@ -731,6 +731,22 @@ const MainTable = ({
 		setOpen(false);
 	};
 
+	const frontendUpload = (file, fileList) => {
+		// parseTheFile (file);
+		// fileList.forEach((f) => parseTheFile(f));
+		var file = fileList[0];
+		if (file.type.match(/text.*/)) {
+			var reader = new FileReader();
+			console.log("1");
+			reader.onload = function (e) {
+				var content = reader.result;
+				console.log(e);
+				// Here the content has been read successfuly
+				setDataSource(JSON.parse(content));
+			};
+			reader.readAsText(file);
+		}
+	};
 	return (
 		<div>
 			<Modal
@@ -765,7 +781,22 @@ const MainTable = ({
 					</Form.Item>
 				</Form>
 			</Modal>
+			<Button
+				href={`data:text/json;charset=utf-8,${encodeURIComponent(
+					JSON.stringify(dataSource)
+				)}`}
+				download={tableName + ".txt"}
+			>
+				<MinusCircleOutlined />
+			</Button>
 
+			<Upload
+				beforeUpload={(file, fileList) => {
+					frontendUpload(file, fileList);
+				}}
+			>
+				<Button icon={<UploadOutlined />}>Click to Upload</Button>
+			</Upload>
 			<DndContext onDragEnd={onDragEnd}>
 				<SortableContext
 					items={dataSource.map((i) => i.key)}

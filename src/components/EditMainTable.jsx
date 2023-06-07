@@ -8,14 +8,16 @@ import {
 	Modal,
 	Button,
 	Upload,
+	Space,
+	Radio,
 } from "antd";
 import React, { useEffect, useState, useRef } from "react";
 import {
 	MenuOutlined,
 	CheckCircleFilled,
 	CloseCircleOutlined,
-	MinusCircleOutlined,
 	UploadOutlined,
+	DownloadOutlined,
 } from "@ant-design/icons";
 import { DndContext } from "@dnd-kit/core";
 import {
@@ -92,11 +94,24 @@ const EditableCell = ({
 	children,
 	...restProps
 }) => {
+	const [radioValue, setRadioValue] = useState(1);
+	const onRadioChange = (e) => {
+		console.log("radio checked", e.target.value);
+		setRadioValue(e.target.value);
+	};
+
 	const inputNode =
 		inputType === "boolean" ? (
 			<Checkbox value={record[dataIndex]} />
 		) : inputType === "textArea" ? (
 			<TextArea rows={4} style={{ width: "350px" }} />
+		) : inputType === "radio" ? (
+			<Radio.Group onChange={onRadioChange} value={radioValue}>
+				<Space direction="vertical">
+					<Radio value={1}>Youtube</Radio>
+					<Radio value={2}>Vimeo</Radio>
+				</Space>
+			</Radio.Group>
 		) : (
 			<Input />
 		);
@@ -107,6 +122,15 @@ const EditableCell = ({
 					<Form.Item
 						name={dataIndex}
 						valuePropName={dataIndex ? "checked" : ""}
+						style={{
+							margin: 0,
+						}}
+					>
+						{inputNode}
+					</Form.Item>
+				) : inputType === "radio" ? (
+					<Form.Item
+						name={dataIndex}
 						style={{
 							margin: 0,
 						}}
@@ -439,6 +463,7 @@ const MainTable = ({
 			description: "",
 			link: "",
 			fa: "",
+			mdeia: "",
 			...record,
 		});
 		setEditingKey(record.key);
@@ -511,6 +536,7 @@ const MainTable = ({
 			link: "",
 			description: "",
 			fa: "",
+			media: "",
 		};
 		setDataSource([...dataSource, newRow]);
 		hasEdited.current = true;
@@ -623,12 +649,20 @@ const MainTable = ({
 							marginBottom: "5px",
 						}}
 					>
-						Youtube Video Id:
+						Video Id:
 					</p>
 					<EditableCell
 						editing={true}
 						dataIndex={"link"}
 						inputType={"text"}
+						record={record}
+					/>
+				</div>
+				<div>
+					<EditableCell
+						editing={true}
+						dataIndex={"media"}
+						inputType={"radio"}
 						record={record}
 					/>
 				</div>
@@ -664,17 +698,35 @@ const MainTable = ({
 				}}
 			>
 				{record.link ? (
-					<iframe
-						src={"https://www.youtube.com/embed/" + record.link}
-						frameborder="0"
-						allow="autoplay; encrypted-media"
-						allowFullScreen
-						title="video"
-						style={{
-							alignItems: "center",
-							margin: "30px",
-						}}
-					/>
+					record.media == 1 ? (
+						<iframe
+							src={"https://www.youtube.com/embed/" + record.link}
+							frameborder="0"
+							allow="autoplay; encrypted-media"
+							allowFullScreen
+							title="video"
+							style={{
+								alignItems: "center",
+								margin: "30px",
+							}}
+						/>
+					) : (
+						<iframe
+							src={
+								"https://player.vimeo.com/video/" +
+								record.link +
+								"?"
+							}
+							frameborder="0"
+							allow="autoplay; encrypted-media"
+							allowFullScreen
+							title="video"
+							style={{
+								alignItems: "center",
+								margin: "30px",
+							}}
+						/>
+					)
 				) : (
 					<p></p>
 				)}
@@ -787,7 +839,7 @@ const MainTable = ({
 				)}`}
 				download={tableName + ".txt"}
 			>
-				<MinusCircleOutlined />
+				<DownloadOutlined />
 			</Button>
 
 			<Upload
@@ -795,7 +847,7 @@ const MainTable = ({
 					frontendUpload(file, fileList);
 				}}
 			>
-				<Button icon={<UploadOutlined />}>Click to Upload</Button>
+				<Button icon={<UploadOutlined />}></Button>
 			</Upload>
 			<DndContext onDragEnd={onDragEnd}>
 				<SortableContext

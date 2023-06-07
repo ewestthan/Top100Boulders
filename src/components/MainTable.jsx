@@ -520,18 +520,36 @@ const MainTable = ({ uid, tableName }) => {
 					justifyContent: "center",
 				}}
 			>
-				{record.link ? (
-					<iframe
-						src={"https://www.youtube.com/embed/" + record.link}
-						frameborder="0"
-						allow="autoplay; encrypted-media"
-						allowFullScreen
-						title="video"
-						style={{
-							alignItems: "center",
-							margin: "30px",
-						}}
-					/>
+				{record.link !== "undefined" ? (
+					record.media == 1 ? (
+						<iframe
+							src={"https://www.youtube.com/embed/" + record.link}
+							frameborder="0"
+							allow="autoplay; encrypted-media"
+							allowFullScreen
+							title="video"
+							style={{
+								alignItems: "center",
+								margin: "30px",
+							}}
+						/>
+					) : (
+						<iframe
+							src={
+								"https://player.vimeo.com/video/" +
+								record.link +
+								"?"
+							}
+							frameborder="0"
+							allow="autoplay; encrypted-media"
+							allowFullScreen
+							title="video"
+							style={{
+								alignItems: "center",
+								margin: "30px",
+							}}
+						/>
+					)
 				) : (
 					<p></p>
 				)}

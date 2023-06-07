@@ -5,6 +5,16 @@
 	--lightGray: #55575a;
 	--darkGray: #3a3b3c;
 }
+
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+	border-color: var(--red);
+	background-color: var(--red);
+}
+
+.ant-radio-wrapper {
+	color: white;
+	font-weight: 600;
+}
 .ant-upload-wrapper
 	.ant-upload-list
 	.ant-upload-list-item
